@@ -1,14 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class MapManager : MonoBehaviour
 {
     public static Dictionary<string, bool> s_leftColorCubes = new Dictionary<string, bool>();
-    public static int s_lastUsedID = -1;
+    public int lastUsedID = -1;
     public int CenterMaxIdxX;
     public int CenterMaxIdxZ;
     public Dictionary<Vector3Int, Cube> CubeMap = new Dictionary<Vector3Int, Cube>();
@@ -37,7 +34,7 @@ public class MapManager : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         //Random.seed = 0;
 
@@ -50,7 +47,7 @@ public class MapManager : MonoBehaviour
         //SpawnManager.BlockInstantiated.AddListener(MatchIDs);
     }
 
-    void CreateCubeMap()
+    private void CreateCubeMap()
     {
         ClearMap();
 
@@ -80,21 +77,21 @@ public class MapManager : MonoBehaviour
             item.Value.CubeID = -1;
         }
 
-        s_lastUsedID = -1;
+        lastUsedID = -1;
 
         foreach (KeyValuePair<Vector3Int, Cube> item in CubeMap)
         {
             if (item.Value.CubeID == -1)
             {
-                s_lastUsedID++;
-                item.Value.CubeID = s_lastUsedID;
+                lastUsedID++;
+                item.Value.CubeID = lastUsedID;
             }
 
             FindNeighbours(item);
         }
     }
 
-    void ChangeIDtoCubes(int prevID, int newID)
+    private void ChangeIDtoCubes(int prevID, int newID)
     {
         foreach (KeyValuePair<Vector3Int, Cube> item in CubeMap)
         {
@@ -105,7 +102,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    void FindNeighbours(KeyValuePair<Vector3Int, Cube> item)
+    private void FindNeighbours(KeyValuePair<Vector3Int, Cube> item)
     {
         for (int i = 0; i < _posToCheck.GetLength(0); i++)
         {
@@ -126,7 +123,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    void DestroyWithID(int ID)
+    private void DestroyWithID(int ID)
     {
         var itemsToRemove = CubeMap.Where(item => item.Value.CubeID == ID).ToArray();
         foreach (var item in itemsToRemove)
@@ -143,7 +140,7 @@ public class MapManager : MonoBehaviour
         CubeMap.Add(position, cube);
     }
 
-    void DFS(Vector3Int initialPos)
+    private void DFS(Vector3Int initialPos)
     {
         // Если узел уже посещен, то работа окончена, иначе продолжаем смотреть соседей
         if (!_visited.ContainsKey(initialPos))
@@ -167,7 +164,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    void DestroyFlyingCubes()
+    private void DestroyFlyingCubes()
     {
         _visited.Clear();
 
@@ -204,7 +201,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    void AddBottomLayer()
+    private void AddBottomLayer()
     {
         var extendedMap = new Dictionary<Vector3Int, Cube>();
 
@@ -237,7 +234,7 @@ public class MapManager : MonoBehaviour
         CubeMap = extendedMap;
     }
 
-    void ClearMap()
+    private void ClearMap()
     {
         foreach (var item in CubeMap)
         {

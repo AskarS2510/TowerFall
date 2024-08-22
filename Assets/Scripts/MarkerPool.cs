@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,7 +58,7 @@ public class MarkerPool : MonoBehaviour
         }
     }
 
-    void ChangeMarkerPosition(int x, int z)
+    private void ChangeMarkerPosition(int x, int z)
     {
         CubeBlock cubeBlock = ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>();
         List<Vector3Int> blockScheme = cubeBlock.RotatedBlockScheme;

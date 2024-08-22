@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class ControlButton : MonoBehaviour
 {
@@ -15,7 +12,7 @@ public class ControlButton : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _button = GetComponent<Button>();
 
@@ -28,7 +25,7 @@ public class ControlButton : MonoBehaviour
         EventManager.ClickedRotate.AddListener(RotateControls);
     }
 
-    void RotateControls(bool left, bool right)
+    private void RotateControls(bool left, bool right)
     {
         if (right)
         {
@@ -49,7 +46,7 @@ public class ControlButton : MonoBehaviour
         }
     }
 
-    void CheckRotatePress()
+    private void CheckRotatePress()
     {
         if (_rotateLeft == true || _rotateRight == true)
         {
@@ -62,7 +59,7 @@ public class ControlButton : MonoBehaviour
         }
     }
 
-    void CheckMovePress()
+    private void CheckMovePress()
     {
         if (_xIndex != 0 || _zIndex != 0)
         {

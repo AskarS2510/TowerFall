@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,12 +6,12 @@ public class PreviewManager : MonoBehaviour
     [SerializeField] private List<GameObject> _previewObjects = new List<GameObject>();
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         EventManager.SpawnedPlayerBlock.AddListener(ChangePreview);
     }
 
-    void ChangePreview()
+    private void ChangePreview()
     {
         GameObject next = ObjectPool.Instance.NextObject;
 

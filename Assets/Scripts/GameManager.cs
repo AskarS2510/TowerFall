@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 public static class GameManager
 {
@@ -48,7 +44,7 @@ public static class GameManager
         EventManager.UpdatedSkip?.Invoke();
     }
 
-    static void ResetStats()
+    private static void ResetStats()
     {
         Score = 0;
         SkipCount = 0;

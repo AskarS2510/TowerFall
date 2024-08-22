@@ -43,7 +43,7 @@ public class ObjectPool : MonoBehaviour
         return ActiveObject;
     }
 
-    int NextIdx()
+    private int NextIdx()
     {
         Shuffle(_pooledObjects);
 
@@ -72,7 +72,7 @@ public class ObjectPool : MonoBehaviour
         return randomPrefabIdx;
     }
 
-    void Shuffle(List<GameObject> list)
+    private void Shuffle(List<GameObject> list)
     {
         int n = list.Count;
 

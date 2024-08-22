@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -14,7 +12,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject _mapManagerObj;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _mapManager = _mapManagerObj.GetComponent<MapManager>();
         _leftRotateCount = 0;
@@ -30,7 +28,7 @@ public class SpawnManager : MonoBehaviour
         EventManager.ClickedRotate.AddListener(RotateSpawnPostiton);
     }
 
-    void SpawnPlayerBlock()
+    private void SpawnPlayerBlock()
     {
         _maxHeight = _mapManager.MaxHeight();
 
@@ -67,7 +65,7 @@ public class SpawnManager : MonoBehaviour
         //_mapManager.ChangeTransparency(cubeBlock.transform.position.x, cubeBlock.transform.position.z);
     }
 
-    void SpawnStuckBlock()
+    private void SpawnStuckBlock()
     {
         CubeBlock cubeBlock = ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>();
         List<Vector3Int> blockScheme = cubeBlock.RotatedBlockScheme;
@@ -91,7 +89,7 @@ public class SpawnManager : MonoBehaviour
         _mapManager.MatchIDs();
     }
 
-    void SpawnMarker()
+    private void SpawnMarker()
     {
         CubeBlock cubeBlock = ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>();
         List<Vector3Int> blockScheme = cubeBlock.RotatedBlockScheme;
@@ -105,7 +103,7 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    void RotateSpawnPostiton(bool left, bool right)
+    private void RotateSpawnPostiton(bool left, bool right)
     {
         if (right)
         {
@@ -118,7 +116,7 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    void PrepareAndSpawn()
+    private void PrepareAndSpawn()
     {
         _mapManager.PrepareMap();
 

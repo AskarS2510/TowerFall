@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class CameraController : MonoBehaviour
 {
@@ -15,7 +10,7 @@ public class CameraController : MonoBehaviour
     private float _positionOffset = 1.2f;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         s_isRotating = false;
 
@@ -23,7 +18,7 @@ public class CameraController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    private void LateUpdate()
     {
         if (s_isRotating)
         {
