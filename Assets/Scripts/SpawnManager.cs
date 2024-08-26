@@ -5,7 +5,6 @@ public class SpawnManager : MonoBehaviour
 {
     public Vector3Int PositionInt;
 
-    private int _maxHeight;
     private int _leftRotateCount, _rightRotateCount;
     private float _positionOffset = 1.2f;
     private MapManager _mapManager;
@@ -17,7 +16,6 @@ public class SpawnManager : MonoBehaviour
         _mapManager = _mapManagerObj.GetComponent<MapManager>();
         _leftRotateCount = 0;
         _rightRotateCount = 0;
-        _maxHeight = 0;
 
         EventManager.StartedGame.AddListener(SpawnPlayerBlock);
 
@@ -25,13 +23,11 @@ public class SpawnManager : MonoBehaviour
 
         EventManager.ReadyForNextBlock.AddListener(SpawnPlayerBlock);
         EventManager.Stuck.AddListener(SpawnStuckBlock);
-        EventManager.ClickedRotate.AddListener(RotateSpawnPostiton);
+        EventManager.RaisedRotate.AddListener(RotateSpawnPostiton);
     }
 
     private void SpawnPlayerBlock()
     {
-        _maxHeight = _mapManager.MaxHeight();
-
         if (_mapManager.CubeMap.Count == 0)
         {
             EventManager.GameOver?.Invoke();
@@ -39,7 +35,7 @@ public class SpawnManager : MonoBehaviour
             return;
         }
 
-        if (_maxHeight >= PositionInt.y)
+        if (_mapManager.MaxHeight() >= PositionInt.y)
         {
             EventManager.GameOver?.Invoke();
 
@@ -61,8 +57,6 @@ public class SpawnManager : MonoBehaviour
         EventManager.SpawnedPlayerBlock?.Invoke();
 
         SpawnMarker();
-
-        //_mapManager.ChangeTransparency(cubeBlock.transform.position.x, cubeBlock.transform.position.z);
     }
 
     private void SpawnStuckBlock()

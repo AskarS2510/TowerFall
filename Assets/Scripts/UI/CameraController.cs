@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour
     {
         s_isRotating = false;
 
-        EventManager.ClickedRotate.AddListener(StartRotation);
+        EventManager.RaisedRotate.AddListener(StartRotation);
     }
 
     // Update is called once per frame

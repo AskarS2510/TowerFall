@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine.Events;
 
 public static class EventManager
@@ -10,8 +11,8 @@ public static class EventManager
     public static UnityEvent MovementEnded;
     public static UnityEvent<int, int> ChangedPosition;
     public static UnityEvent SpawnedPlayerBlock;
-    public static UnityEvent<bool, bool> ClickedRotate;
-    public static UnityEvent<int, int> ClickedMove;
+    public static UnityEvent<bool, bool> RaisedRotate;
+    public static UnityEvent<int, int> RaisedMove;
     public static UnityEvent TurnedOnSpeed;
     public static UnityEvent TurnedOffSpeed;
     public static UnityEvent UpdatedScore;
@@ -31,8 +32,8 @@ public static class EventManager
         MovementEnded = new UnityEvent();
         ChangedPosition = new UnityEvent<int, int>();
         SpawnedPlayerBlock = new UnityEvent();
-        ClickedRotate = new UnityEvent<bool, bool>();
-        ClickedMove = new UnityEvent<int, int>();
+        RaisedRotate = new UnityEvent<bool, bool>();
+        RaisedMove = new UnityEvent<int, int>();
         UpdatedScore = new UnityEvent();
         UpdatedSkip = new UnityEvent();
         ExceededSkip = new UnityEvent();

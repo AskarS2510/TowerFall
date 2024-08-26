@@ -14,9 +14,9 @@ public class MapManager : MonoBehaviour
     private int _mapCenterMaxIdxX = 1;
     private int _mapCenterMaxIdxZ = 1;
     private int _mapCenterStartIdxY = 0;
-    private int[,] _posToCheck = { { -1, 0, 0 }, { 1, 0, 0 },
-        { 0, -1, 0 }, { 0, 1, 0 },
-        { 0, 0, -1 }, { 0, 0, 1 } };
+    private List<Vector3Int> _shifts = new List<Vector3Int> { Vector3Int.left, Vector3Int.right,
+            Vector3Int.up, Vector3Int.down,
+            Vector3Int.forward, Vector3Int.back };
     private float _positionOffset = 1.2f;
     [SerializeField] private int _mapCenterMaxIdxY;
     [SerializeField] private List<GameObject> _prefabCubes;
@@ -33,7 +33,6 @@ public class MapManager : MonoBehaviour
         MatchIDs();
     }
 
-    // Start is called before the first frame update
     private void Start()
     {
         //Random.seed = 0;
@@ -41,10 +40,6 @@ public class MapManager : MonoBehaviour
         EventManager.Destroyed.AddListener(DestroyWithID);
         EventManager.AllowedDestroyFlying.AddListener(DestroyFlyingCubes);
         EventManager.ExceededSkip.AddListener(AddBottomLayer);
-        //CubeBlock.ChangedPosition.AddListener(ChangeTransparency);
-
-        //SpawnManager.Instantiated.AddListener(AddCube);
-        //SpawnManager.BlockInstantiated.AddListener(MatchIDs);
     }
 
     private void CreateCubeMap()
@@ -104,10 +99,9 @@ public class MapManager : MonoBehaviour
 
     private void FindNeighbours(KeyValuePair<Vector3Int, Cube> item)
     {
-        for (int i = 0; i < _posToCheck.GetLength(0); i++)
+        foreach (var shift in _shifts)
         {
-            Vector3Int posToCheck = new Vector3Int(item.Key.x + _posToCheck[i, 0],
-                item.Key.y + _posToCheck[i, 1], item.Key.z + _posToCheck[i, 2]);
+            Vector3Int posToCheck = item.Key + shift;
 
             if (CubeMap.ContainsKey(posToCheck) && CubeMap[posToCheck].name == item.Value.name)
             {
@@ -152,10 +146,9 @@ public class MapManager : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < _posToCheck.GetLength(0); i++)
+        foreach (var shift in _shifts)
         {
-            Vector3Int posToCheck = new Vector3Int(initialPos.x + _posToCheck[i, 0],
-                initialPos.y + _posToCheck[i, 1], initialPos.z + _posToCheck[i, 2]);
+            Vector3Int posToCheck = initialPos + shift;
 
             if (CubeMap.ContainsKey(posToCheck))
             {

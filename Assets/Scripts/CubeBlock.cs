@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -12,19 +13,17 @@ public class CubeBlock : MonoBehaviour
     public Quaternion StuckRotation;
     public Vector3Int PositionInt;
 
-    private static float s_speededDownDelay = 0.1f;
-    private static float s_defaultDownDelay = 0.1f;
-    private static float s_downDelay = s_defaultDownDelay;
     private static float s_speededMoveDownTime = 0.1f;
     private static float s_defaultMoveDownTime = 0.5f;
+    private static float s_waitOnCubeTime = s_defaultMoveDownTime - 0.1f;
     private static float s_moveDownTime = s_defaultMoveDownTime;
+    private static bool s_isSpeeded = false;
     private float _positionOffset = 1.2f;
     private MapManager _mapManager;
     private int _colliderEntryCounter;
     private bool _foundToDestroy;
     private bool _isTimePassed;
     private bool _isGroundBelow;
-    private float _lastMoveTime;
     private IEnumerator _moveDownCoroutine;
     private IEnumerator _timeOutCoroutine;
     [SerializeField] private GameObject _mapManagerObj;
@@ -40,7 +39,7 @@ public class CubeBlock : MonoBehaviour
 
         ModifyColliders(false);
 
-        EventManager.ClickedMove.AddListener(MoveHorizontal);
+        EventManager.RaisedMove.AddListener(MoveHorizontal);
     }
 
     private void Awake()
@@ -55,7 +54,7 @@ public class CubeBlock : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("entry= " + " other = " + other.name);
+        //Debug.Log("entry= " + " other = " + other.name);
 
         if (_isTimePassed)
         {
@@ -70,7 +69,7 @@ public class CubeBlock : MonoBehaviour
         StopCoroutine(_moveDownCoroutine);
 
         EventManager.StoppedMovement?.Invoke();
-        EventManager.ClickedMove.RemoveListener(MoveHorizontal);
+        EventManager.RaisedMove.RemoveListener(MoveHorizontal);
 
         _isTimePassed = true;
 
@@ -93,6 +92,8 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator MoveDown()
     {
+        CheckNeighbours();
+
         yield return new WaitForSeconds(s_moveDownTime);
 
         while (true)
@@ -107,7 +108,8 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator TimeOut()
     {
-        yield return new WaitForSeconds(s_moveDownTime - s_downDelay);
+        if (!s_isSpeeded)
+            yield return new WaitForSeconds(s_waitOnCubeTime);
 
         StopMovesStartCollides();
     }
@@ -250,7 +252,7 @@ public class CubeBlock : MonoBehaviour
 
     private void CheckSphereCollisions(Collider other)
     {
-        Debug.Log("sphere entry counter = " + _colliderEntryCounter + " other = " + other.name);
+        //Debug.Log("sphere entry counter = " + _colliderEntryCounter + " other = " + other.name);
 
         if (other.gameObject.name == "Ground")
         {
@@ -269,7 +271,8 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator DestroyWithDelay(int IDtoDestroy)
     {
-        Debug.Log("1st wait destroy");
+       // Debug.Log("1st wait destroy");
+
         yield return new WaitForSeconds(1f);
 
         EventManager.Destroyed?.Invoke(IDtoDestroy);
@@ -282,10 +285,11 @@ public class CubeBlock : MonoBehaviour
             GameManager.UpdateScore("Inner");
         }
 
-        Debug.Log("Destroy invoke + 2nd wait destroy");
+        //Debug.Log("Destroy invoke + 2nd wait destroy");
+
         yield return new WaitForSeconds(1f);
 
-        Debug.Log("Destroy invoke destroy");
+        //Debug.Log("Destroy invoke destroy");
 
         EventManager.AllowedDestroyFlying?.Invoke();
 
@@ -298,7 +302,8 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator StickWithDelay()
     {
-        Debug.Log("1st wait stick");
+        //Debug.Log("1st wait stick");
+
         yield return new WaitForSeconds(1f);
 
         // Отмена, если нашлось обо что уничтожиться
@@ -315,10 +320,11 @@ public class CubeBlock : MonoBehaviour
 
         EventManager.Stuck?.Invoke();
 
-        Debug.Log("stuck invoke + 2nd wait stick");
+        //Debug.Log("stuck invoke + 2nd wait stick");
+
         yield return new WaitForSeconds(1f);
 
-        Debug.Log("next invoke stick");
+        //Debug.Log("next invoke stick");
 
         gameObject.SetActive(false);
 
@@ -413,12 +419,12 @@ public class CubeBlock : MonoBehaviour
 
     private void SpeedUpMoveDown()
     {
+        s_isSpeeded = true;
         s_moveDownTime = s_speededMoveDownTime;
-        s_downDelay = s_speededDownDelay;
     }
     private void SlowMoveDown()
     {
+        s_isSpeeded = false;
         s_moveDownTime = s_defaultMoveDownTime;
-        s_downDelay = s_defaultDownDelay;
     }
 }

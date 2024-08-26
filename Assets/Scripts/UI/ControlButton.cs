@@ -16,13 +16,10 @@ public class ControlButton : MonoBehaviour
     {
         _button = GetComponent<Button>();
 
-        //EventManager.StoppedMovement.AddListener(GrabControl);
-        //EventManager.SpawnedPlayerBlock.AddListener(UpdateControlledObject);
-
         _button.onClick.AddListener(CheckRotatePress);
         _button.onClick.AddListener(CheckMovePress);
         
-        EventManager.ClickedRotate.AddListener(RotateControls);
+        EventManager.RaisedRotate.AddListener(RotateControls);
     }
 
     private void RotateControls(bool left, bool right)
@@ -55,7 +52,7 @@ public class ControlButton : MonoBehaviour
                 return;
             }
 
-            EventManager.ClickedRotate?.Invoke(_rotateLeft, _rotateRight);
+            EventManager.RaisedRotate?.Invoke(_rotateLeft, _rotateRight);
         }
     }
 
@@ -63,7 +60,7 @@ public class ControlButton : MonoBehaviour
     {
         if (_xIndex != 0 || _zIndex != 0)
         {
-            EventManager.ClickedMove?.Invoke(_xIndex, _zIndex);
+            EventManager.RaisedMove?.Invoke(_xIndex, _zIndex);
         }
     }
 
