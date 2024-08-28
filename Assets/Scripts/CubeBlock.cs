@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class CubeBlock : MonoBehaviour
 {
@@ -23,7 +24,6 @@ public class CubeBlock : MonoBehaviour
     private int _colliderEntryCounter;
     private bool _foundToDestroy;
     private bool _isTimePassed;
-    private bool _isGroundBelow;
     private IEnumerator _moveDownCoroutine;
     private IEnumerator _timeOutCoroutine;
     [SerializeField] private GameObject _mapManagerObj;
@@ -35,7 +35,6 @@ public class CubeBlock : MonoBehaviour
         _isTimePassed = false;
         _moveDownCoroutine = MoveDown();
         _timeOutCoroutine = null;
-        _isGroundBelow = false;
 
         ModifyColliders(false);
 
@@ -103,6 +102,8 @@ public class CubeBlock : MonoBehaviour
             CheckNeighbours();
 
             yield return new WaitForSeconds(s_moveDownTime);
+
+
         }
     }
 
@@ -117,6 +118,53 @@ public class CubeBlock : MonoBehaviour
     public void StartMoveDown()
     {
         StartCoroutine(_moveDownCoroutine);
+    }
+
+    private bool isDownAvailable()
+    {
+        Vector3Int shift = Vector3Int.down;
+
+        Vector3Int newBlockPos = PositionInt + shift;
+
+        foreach (Vector3Int pos in RotatedBlockScheme)
+        {
+            Vector3Int newCubePos = newBlockPos + pos;
+
+            if (_mapManager.CubeMap.ContainsKey(newCubePos))
+                return false;
+        }
+
+        return true;
+    }
+
+    private bool isHorizontalAvailable()
+    {
+        List<Vector3Int> shifts = new List<Vector3Int> { Vector3Int.left, Vector3Int.right,
+            Vector3Int.forward, Vector3Int.back };
+
+        foreach (var shift in shifts)
+        {
+            Vector3Int newBlockPos = PositionInt + shift;
+
+            foreach (Vector3Int pos in RotatedBlockScheme)
+            {
+                Vector3Int newCubePos = newBlockPos + pos;
+
+                if (_mapManager.CubeMap.ContainsKey(newCubePos))
+                {
+                    string name = _mapManager.CubeMap[newCubePos].name;
+                    string nameWithoutClone = name.Substring(0, name.Length - 7);
+
+                    // Если где-то попался куб того же цвета (но не снизу), то останавливаемся
+                    if (nameWithoutClone == BlockStructure.name)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     private void CheckNeighbours()
@@ -185,7 +233,7 @@ public class CubeBlock : MonoBehaviour
             if (_mapManager.CubeMap.ContainsKey(newCubePos))
                 return;
 
-            if (!IsMapClear(newCubePos))
+            if (!IsOnMap(newCubePos))
                 return;
         }
 
@@ -200,7 +248,7 @@ public class CubeBlock : MonoBehaviour
             CheckNeighbours();        
     }
 
-    private bool IsMapClear(Vector3Int newCubePos)
+    private bool IsOnMap(Vector3Int newCubePos)
     {
         if (newCubePos.x > _mapManager.CenterMaxIdxX)
         {
@@ -269,6 +317,16 @@ public class CubeBlock : MonoBehaviour
         }
     }
 
+    private void SpawnDestructionEffect()
+    {
+        foreach (Vector3Int pos in RotatedBlockScheme)
+        {
+            Vector3Int newPos = PositionInt + pos;
+
+            ParticlesPool.Instance.SpawnParticles(newPos);
+        }
+    }
+
     private IEnumerator DestroyWithDelay(int IDtoDestroy)
     {
        // Debug.Log("1st wait destroy");
@@ -276,6 +334,8 @@ public class CubeBlock : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         EventManager.Destroyed?.Invoke(IDtoDestroy);
+
+        SpawnDestructionEffect();
 
         // Убираем объект из видимости
         ChangePosition(PositionInt + 120 * Vector3Int.down);

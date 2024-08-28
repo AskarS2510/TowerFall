@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
+using static UnityEngine.ParticleSystem;
 
 public class MapManager : MonoBehaviour
 {
@@ -54,7 +56,7 @@ public class MapManager : MonoBehaviour
 
                     GameObject randomCube = RandomCube();
 
-                    GameObject cubeObject = Instantiate(randomCube, (Vector3)cubePosition * _positionOffset, randomCube.transform.rotation);
+                    GameObject cubeObject = Instantiate(randomCube, (Vector3)cubePosition * _positionOffset, randomCube.transform.rotation, transform);
 
                     CubeMap.Add(cubePosition, cubeObject.GetComponent<Cube>());
                 }
@@ -122,6 +124,8 @@ public class MapManager : MonoBehaviour
         var itemsToRemove = CubeMap.Where(item => item.Value.CubeID == ID).ToArray();
         foreach (var item in itemsToRemove)
         {
+            ParticlesPool.Instance.SpawnParticles(item.Key);
+
             CubeMap.Remove(item.Key);
             Destroy(item.Value.gameObject);
 
@@ -187,6 +191,8 @@ public class MapManager : MonoBehaviour
 
         foreach (var item in unvisited)
         {
+            ParticlesPool.Instance.SpawnParticles(item.Key);
+
             CubeMap.Remove(item.Key);
             Destroy(item.Value.gameObject);
 
@@ -218,7 +224,7 @@ public class MapManager : MonoBehaviour
                 {
                     GameObject randomCube = RandomCube();
 
-                    GameObject cubeObject = Instantiate(randomCube, (Vector3)cubePosition * _positionOffset, randomCube.transform.rotation);
+                    GameObject cubeObject = Instantiate(randomCube, (Vector3)cubePosition * _positionOffset, randomCube.transform.rotation, transform);
 
                     extendedMap.Add(cubePosition, cubeObject.GetComponent<Cube>());
                 }

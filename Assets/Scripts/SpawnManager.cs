@@ -71,7 +71,7 @@ public class SpawnManager : MonoBehaviour
         {
             Vector3Int newPos = stuckObjectPos + pos;
 
-            GameObject newCubeObject = Instantiate(blockStructure, (Vector3)newPos * _positionOffset, stuckObjectRotation);
+            GameObject newCubeObject = Instantiate(blockStructure, (Vector3)newPos * _positionOffset, stuckObjectRotation, transform);
 
             Cube newCube = newCubeObject.GetComponent<Cube>();
 

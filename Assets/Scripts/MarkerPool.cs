@@ -24,7 +24,7 @@ public class MarkerPool : MonoBehaviour
 
         for (int i = 0; i < _amountToPool; i++)
         {
-            GameObject newPrefab = Instantiate(_prefabMarker);
+            GameObject newPrefab = Instantiate(_prefabMarker, transform);
 
             newPrefab.SetActive(false);
 

@@ -33,7 +33,8 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKey(KeyCode.DownArrow))
             EventManager.TurnedOnSpeed?.Invoke();
-        else
+
+        if (Input.GetKeyUp(KeyCode.DownArrow))
             EventManager.TurnedOffSpeed?.Invoke();
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))

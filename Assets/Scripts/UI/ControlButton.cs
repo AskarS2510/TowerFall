@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,13 @@ public class ControlButton : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        if (SystemInfo.deviceType == DeviceType.Desktop)
+        {
+            gameObject.SetActive(false);
+
+            return;
+        }
+
         _button = GetComponent<Button>();
 
         _button.onClick.AddListener(CheckRotatePress);
