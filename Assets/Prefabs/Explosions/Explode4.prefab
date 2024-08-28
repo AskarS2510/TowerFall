@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6165101471311810939}
   - component: {fileID: 4048735357521186180}
   - component: {fileID: 7280170395611661620}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4817,7 +4817,7 @@ GameObject:
   - component: {fileID: 8364615521022477899}
   - component: {fileID: 8393052695534474895}
   - component: {fileID: 1050974046660157716}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Spark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9624,7 +9624,7 @@ GameObject:
   - component: {fileID: 3402805112831592725}
   - component: {fileID: 2829915980706964291}
   - component: {fileID: 2336007344743129652}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Explode4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14469,7 +14469,7 @@ GameObject:
   - component: {fileID: 5925737647917550504}
   - component: {fileID: 212751870474312132}
   - component: {fileID: 4751841477361039544}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ring2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
