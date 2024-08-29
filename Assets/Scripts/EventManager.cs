@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine.Events;
 
 public static class EventManager

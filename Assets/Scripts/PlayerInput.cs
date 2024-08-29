@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
@@ -11,6 +8,9 @@ public class PlayerInput : MonoBehaviour
     private int _leftArrowZ = 0;
     private const bool k_isLeftRotate = true;
     private const bool k_isRightRotate = true;
+    private Vector2 _startPos;
+    private Vector2 _endPos;
+    private float _swipeForce = 0.08f * Screen.width;
 
     private void Start()
     {
@@ -18,6 +18,58 @@ public class PlayerInput : MonoBehaviour
     }
 
     private void Update()
+    {
+        ProcessKeyboardInput();
+
+        ProcessTouchInput();
+    }
+
+    private void ProcessTouchInput()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            //EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                _startPos = touch.position;
+            }
+
+            if (touch.phase == TouchPhase.Moved)
+            {
+                _endPos = touch.position;
+                Vector2 deltaPos = _endPos - _startPos;
+
+                if (deltaPos.x > _swipeForce && deltaPos.y > _swipeForce)
+                {
+                    _startPos = _endPos;
+                    EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
+                }
+
+                if (deltaPos.x < -_swipeForce && deltaPos.y < -_swipeForce)
+                {
+                    _startPos = _endPos;
+                    EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
+                }
+
+                if (deltaPos.x < -_swipeForce && deltaPos.y > _swipeForce)
+                {
+                    _startPos = _endPos;
+                    EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
+                }
+
+                if (deltaPos.x > _swipeForce && deltaPos.y < -_swipeForce)
+                {
+                    _startPos = _endPos;
+                    EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
+                }
+            }
+        }
+    }
+
+    private void ProcessKeyboardInput()
     {
         if (Input.GetKeyDown(KeyCode.W))
             EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
@@ -39,21 +91,17 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            if (CameraController.s_isRotating)
+            if (!CameraController.s_isRotating)
             {
-                return;
+                EventManager.RaisedRotate?.Invoke(k_isLeftRotate, !k_isRightRotate);
             }
-
-            EventManager.RaisedRotate?.Invoke(k_isLeftRotate, !k_isRightRotate);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            if (CameraController.s_isRotating)
+            if (!CameraController.s_isRotating)
             {
-                return;
+                EventManager.RaisedRotate?.Invoke(!k_isLeftRotate, k_isRightRotate);
             }
-
-            EventManager.RaisedRotate?.Invoke(!k_isLeftRotate, k_isRightRotate);
         }
     }
 

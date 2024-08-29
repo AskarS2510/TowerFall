@@ -4,19 +4,10 @@ using UnityEngine;
 public class MarkerPool : MonoBehaviour
 {
     [SerializeField] private GameObject _prefabMarker;
-    public static MarkerPool Instance;
 
     private int _amountToPool = 8;
     private List<GameObject> _pool;
     private float _positionOffset = 1.2f;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-    }
 
     private void Start()
     {
@@ -33,9 +24,10 @@ public class MarkerPool : MonoBehaviour
 
         EventManager.ChangedPosition.AddListener(ChangeMarkerPosition);
         EventManager.StoppedMovement.AddListener(ClearPool);
+        EventManager.SpawnedPlayerBlock.AddListener(SpawnMarker);
     }
 
-    public GameObject GetPooledObject()
+    private GameObject GetPooledObject()
     {
         for (int i = 0; i < _amountToPool; i++)
         {
@@ -50,7 +42,7 @@ public class MarkerPool : MonoBehaviour
         return null;
     }
 
-    public void ClearPool()
+    private void ClearPool()
     {
         for (int i = 0; i < _amountToPool; i++)
         {
@@ -67,6 +59,20 @@ public class MarkerPool : MonoBehaviour
         {
             _pool[i].transform.position = new Vector3((x + blockScheme[i].x) * _positionOffset,
                 _pool[i].transform.position.y, (z + blockScheme[i].z) * _positionOffset);
+        }
+    }
+
+    private void SpawnMarker()
+    {
+        CubeBlock cubeBlock = ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>();
+        List<Vector3Int> blockScheme = cubeBlock.RotatedBlockScheme;
+
+        for (int i = 0; i < blockScheme.Count; i++)
+        {
+            GameObject marker = GetPooledObject();
+
+            marker.transform.position = new Vector3(cubeBlock.transform.position.x + blockScheme[i].x * _positionOffset,
+                marker.transform.position.y, cubeBlock.transform.position.z + blockScheme[i].z * _positionOffset);
         }
     }
 }

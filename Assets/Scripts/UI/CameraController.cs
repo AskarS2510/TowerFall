@@ -8,6 +8,8 @@ public class CameraController : MonoBehaviour
     private int _direction;
     private Quaternion _desiredRotQ;
     private float _positionOffset = 1.2f;
+    private float _startMinimapRotationY = -45;
+    [SerializeField] private GameObject _minimapCamera;
 
     // Start is called before the first frame update
     private void Start()
@@ -15,6 +17,8 @@ public class CameraController : MonoBehaviour
         s_isRotating = false;
 
         EventManager.RaisedRotate.AddListener(StartRotation);
+        EventManager.ChangedPosition.AddListener(ChangeMinimapPosition);
+        EventManager.SpawnedPlayerBlock.AddListener(ResetPosition);
     }
 
     // Update is called once per frame
@@ -25,6 +29,10 @@ public class CameraController : MonoBehaviour
             var step = _rotateSpeed * Time.deltaTime;
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, _desiredRotQ, step);
+
+            float yRotation = _startMinimapRotationY + transform.eulerAngles.y;
+
+            _minimapCamera.transform.eulerAngles = new Vector3(_minimapCamera.transform.eulerAngles.x, yRotation, _minimapCamera.transform.eulerAngles.z);
 
             if (transform.rotation.eulerAngles == _desiredRotQ.eulerAngles)
             {
@@ -58,5 +66,15 @@ public class CameraController : MonoBehaviour
         _desiredRotQ.eulerAngles = transform.rotation.eulerAngles + new Vector3(0, _direction * 90, 0);
 
         s_isRotating = true;
+    }
+
+    private void ChangeMinimapPosition(int xIndex, int zIndex)
+    {
+        _minimapCamera.transform.position = new Vector3(xIndex * _positionOffset, _minimapCamera.transform.position.y, zIndex * _positionOffset);
+    }
+
+    private void ResetPosition()
+    {
+        _minimapCamera.transform.position = new Vector3(0, _minimapCamera.transform.position.y, 0);
     }
 }

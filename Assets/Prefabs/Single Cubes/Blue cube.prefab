@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7010534539102184315}
   - component: {fileID: 3697198120011969543}
   - component: {fileID: 3205343677474172401}
-  - component: {fileID: 1947425005901684047}
   m_Layer: 0
   m_Name: Blue cube
   m_TagString: Untagged
@@ -98,24 +97,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CubeID: -1
---- !u!135 &1947425005901684047
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3438363310069383869}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.8
-  m_Center: {x: 0, y: 0, z: 0}

@@ -55,8 +55,6 @@ public class SpawnManager : MonoBehaviour
         cubeBlock.StartMoveDown();
 
         EventManager.SpawnedPlayerBlock?.Invoke();
-
-        SpawnMarker();
     }
 
     private void SpawnStuckBlock()
@@ -81,20 +79,6 @@ public class SpawnManager : MonoBehaviour
         GameManager.AddSkip();
 
         _mapManager.MatchIDs();
-    }
-
-    private void SpawnMarker()
-    {
-        CubeBlock cubeBlock = ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>();
-        List<Vector3Int> blockScheme = cubeBlock.RotatedBlockScheme;
-
-        for (int i = 0; i < blockScheme.Count; i++)
-        {
-            GameObject marker = MarkerPool.Instance.GetPooledObject();
-
-            marker.transform.position = new Vector3(cubeBlock.transform.position.x + blockScheme[i].x * _positionOffset,
-                marker.transform.position.y, cubeBlock.transform.position.z + blockScheme[i].z * _positionOffset);
-        }
     }
 
     private void RotateSpawnPostiton(bool left, bool right)

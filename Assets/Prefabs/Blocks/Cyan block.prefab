@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4644459546514776109}
-  - component: {fileID: 7374517575798603923}
   - component: {fileID: 4929794388053383783}
   m_Layer: 0
   m_Name: Cyan block
@@ -36,33 +35,6 @@ Transform:
   - {fileID: 3748914285693918738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &7374517575798603923
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7327690348075461169}
-  serializedVersion: 4
-  m_Mass: 100
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!114 &4929794388053383783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,8 +58,6 @@ MonoBehaviour:
   StuckRotation: {x: 0, y: 0, z: 0, w: 0}
   PositionInt: {x: 0, y: 0, z: 0}
   _mapManagerObj: {fileID: 0}
-  _particlePrefab: {fileID: 2829915980706964291, guid: 0946ac6d27d93fc4fb459d106e02f237,
-    type: 3}
 --- !u!1001 &1591870366758270733
 PrefabInstance:
   m_ObjectHideFlags: 0

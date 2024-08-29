@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class CubeBlock : MonoBehaviour
 {
@@ -17,7 +14,6 @@ public class CubeBlock : MonoBehaviour
     private static float s_speededMoveDownTime = 0.1f;
     private static float s_defaultMoveDownTime = 0.5f;
     private static float s_moveDownTime = s_defaultMoveDownTime;
-    private static bool s_isSpeeded = false;
     private float _positionOffset = 1.2f;
     private MapManager _mapManager;
     private IEnumerator _moveDownCoroutine;
@@ -328,12 +324,10 @@ public class CubeBlock : MonoBehaviour
 
     private void SpeedUpMoveDown()
     {
-        s_isSpeeded = true;
         s_moveDownTime = s_speededMoveDownTime;
     }
     private void SlowMoveDown()
     {
-        s_isSpeeded = false;
         s_moveDownTime = s_defaultMoveDownTime;
     }
 }
