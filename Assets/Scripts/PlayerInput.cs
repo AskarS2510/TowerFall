@@ -9,8 +9,13 @@ public class PlayerInput : MonoBehaviour
     private const bool k_isLeftRotate = true;
     private const bool k_isRightRotate = true;
     private Vector2 _startPos;
-    private Vector2 _endPos;
-    private float _swipeForce = 0.08f * Screen.width;
+    private Vector2 _currentPos;
+    private const float _swipeScreenPercent = 0.1f;
+    private readonly float _swipeForce = _swipeScreenPercent * Screen.width;
+    private readonly float _doubleSwipe = _swipeScreenPercent * Screen.width * 2;
+    // Косинус и синус -45 градусов
+    private readonly float _cos = Mathf.Sqrt(2) / 2;
+    private readonly float _sin = -Mathf.Sqrt(2) / 2;
 
     private void Start()
     {
@@ -30,8 +35,6 @@ public class PlayerInput : MonoBehaviour
         {
             Touch touch = Input.GetTouch(0);
 
-            //EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
-
             if (touch.phase == TouchPhase.Began)
             {
                 _startPos = touch.position;
@@ -39,34 +42,61 @@ public class PlayerInput : MonoBehaviour
 
             if (touch.phase == TouchPhase.Moved)
             {
-                _endPos = touch.position;
-                Vector2 deltaPos = _endPos - _startPos;
+                _currentPos = touch.position;
+                Vector2 deltaPos = _currentPos - _startPos;
 
-                if (deltaPos.x > _swipeForce && deltaPos.y > _swipeForce)
+                Vector2 angledDelta = AngledCoords(deltaPos);
+                Vector2 angledStartPos = AngledCoords(_startPos);
+
+                if (angledDelta.y > _swipeForce)
                 {
-                    _startPos = _endPos;
+                    angledStartPos = angledStartPos + new Vector2(0, _doubleSwipe);
+                    _startPos = DefaultCoords(angledStartPos);
+
                     EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
                 }
 
-                if (deltaPos.x < -_swipeForce && deltaPos.y < -_swipeForce)
+                if (angledDelta.y < -_swipeForce)
                 {
-                    _startPos = _endPos;
+                    angledStartPos = angledStartPos + new Vector2(0, -_doubleSwipe);
+                    _startPos = DefaultCoords(angledStartPos);
+
                     EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
                 }
 
-                if (deltaPos.x < -_swipeForce && deltaPos.y > _swipeForce)
+                if (angledDelta.x < -_swipeForce)
                 {
-                    _startPos = _endPos;
+                    angledStartPos = angledStartPos + new Vector2(-_doubleSwipe, 0);
+                    _startPos = DefaultCoords(angledStartPos);
+
                     EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
                 }
 
-                if (deltaPos.x > _swipeForce && deltaPos.y < -_swipeForce)
+                if (angledDelta.x > _swipeForce)
                 {
-                    _startPos = _endPos;
+                    angledStartPos = angledStartPos + new Vector2(_doubleSwipe, 0);
+                    _startPos = DefaultCoords(angledStartPos);
+
                     EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
                 }
             }
         }
+    }
+
+    private Vector2 AngledCoords(Vector2 pos)
+    {
+        float x = pos.x;
+        float y = pos.y;
+
+        return new Vector2(x * _cos + y * _sin, y * _cos - x * _sin);
+    }
+
+    private Vector2 DefaultCoords(Vector2 pos)
+    {
+        float x = pos.x;
+        float y = pos.y;
+
+        return new Vector2(x * _cos - y * _sin, x * _sin + y * _cos);
     }
 
     private void ProcessKeyboardInput()

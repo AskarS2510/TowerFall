@@ -26,8 +26,6 @@ public class PreviewManager : MonoBehaviour
 
                 obj.transform.position -= Vector3.up * 10;
 
-                //transform.position = new Vector3(obj.transform.position.x + 2.5f, transform.position.y, transform.position.z);
-
                 _lastNext = obj;
 
                 break;

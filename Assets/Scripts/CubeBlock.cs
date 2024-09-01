@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CubeBlock : MonoBehaviour
@@ -10,6 +11,7 @@ public class CubeBlock : MonoBehaviour
     public Vector3Int StuckPosition;
     public Quaternion StuckRotation;
     public Vector3Int PositionInt;
+    public Vector3Int FinalPosition;
 
     private static float s_speededMoveDownTime = 0.1f;
     private static float s_defaultMoveDownTime = 0.5f;
@@ -38,33 +40,43 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator MoveDown()
     {
+        FinalPosition = GetFinalPosition();
+
         while (true)
         {
             yield return new WaitForSeconds(s_moveDownTime);
 
-            if (PositionInt.y == 0)
+            if (PositionInt == FinalPosition)
             {
                 DestroyOrStick();
 
                 yield break;
             }
-
-            if (isDownAvailable())
-                ChangePosition(PositionInt + Vector3Int.down);
             else
+                ChangePosition(PositionInt + Vector3Int.down);
+        }
+    }
+
+    private Vector3Int GetFinalPosition()
+    {
+        Vector3Int currentPos = PositionInt;
+
+        for (int i = currentPos.y; i >= 0; i--)
+        {
+            currentPos.y = i;
+
+            if (IsPositionFinal(currentPos))
             {
-                DestroyOrStick();
-
-                yield break;
-            }
-
-            if (isStuckHorizontal())
-            {
-                DestroyOrStick();
-
-                yield break;
+                return currentPos;
             }
         }
+
+        return Vector3Int.zero;
+    }
+
+    private bool IsPositionFinal(Vector3Int position)
+    {
+        return !IsDownAvailable(position) || IsStuckHorizontal(position);
     }
 
     private void DestroyOrStick()
@@ -110,14 +122,14 @@ public class CubeBlock : MonoBehaviour
         EventManager.ReadyForNextBlock?.Invoke();
     }
 
-    private bool isStuckHorizontal()
+    private bool IsStuckHorizontal(Vector3Int positionInt)
     {
         List<Vector3Int> shifts = new List<Vector3Int> { Vector3Int.left, Vector3Int.right,
             Vector3Int.forward, Vector3Int.back };
 
         foreach (var shift in shifts)
         {
-            Vector3Int newBlockPos = PositionInt + shift;
+            Vector3Int newBlockPos = positionInt + shift;
 
             foreach (Vector3Int pos in RotatedBlockScheme)
             {
@@ -178,11 +190,14 @@ public class CubeBlock : MonoBehaviour
         StartCoroutine(_moveDownCoroutine);
     }
 
-    private bool isDownAvailable()
+    private bool IsDownAvailable(Vector3Int positionInt)
     {
+        if (positionInt.y == 0)
+            return false;
+
         Vector3Int shift = Vector3Int.down;
 
-        Vector3Int newBlockPos = PositionInt + shift;
+        Vector3Int newBlockPos = positionInt + shift;
 
         foreach (Vector3Int pos in RotatedBlockScheme)
         {
@@ -215,14 +230,16 @@ public class CubeBlock : MonoBehaviour
         // Если все свободно, то перемещаем
         ChangePosition(PositionInt + shift);
 
+        FinalPosition = GetFinalPosition();
+
         EventManager.ChangedPosition?.Invoke(PositionInt.x, PositionInt.z);
+        
+        //if (IsStuckHorizontal(PositionInt))
+        //{
+        //    StopCoroutine(_moveDownCoroutine);
 
-        if (isStuckHorizontal())
-        {
-            StopCoroutine(_moveDownCoroutine);
-
-            DestroyOrStick();
-        }
+        //    DestroyOrStick();
+        //}
     }
 
     private bool IsOnMap(Vector3Int newCubePos)
