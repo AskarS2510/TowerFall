@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CubeBlock : MonoBehaviour
@@ -12,30 +11,30 @@ public class CubeBlock : MonoBehaviour
     public Quaternion StuckRotation;
     public Vector3Int PositionInt;
     public Vector3Int FinalPosition;
+    public Color BlockColor;
 
     private static float s_speededMoveDownTime = 0.1f;
     private static float s_defaultMoveDownTime = 0.5f;
     private static float s_moveDownTime = s_defaultMoveDownTime;
     private float _positionOffset = 1.2f;
-    private MapManager _mapManager;
-    private IEnumerator _moveDownCoroutine;
-    [SerializeField] private GameObject _mapManagerObj;
+    [SerializeField] private MapManager _mapManager;
 
     private void OnEnable()
     {
-        _moveDownCoroutine = MoveDown();
-
         EventManager.RaisedMove.AddListener(MoveHorizontal);
     }
 
     private void Awake()
     {
         RotatedBlockScheme = new List<Vector3Int>(DefaultBlockScheme);
-        _mapManager = _mapManagerObj.GetComponent<MapManager>();
+
+        BlockColor = BlockStructure.GetComponent<Cube>().material.color;
 
         EventManager.TurnedOnSpeed.AddListener(SpeedUpMoveDown);
 
         EventManager.TurnedOffSpeed.AddListener(SlowMoveDown);
+
+        gameObject.SetActive(false);
     }
 
     private IEnumerator MoveDown()
@@ -96,16 +95,10 @@ public class CubeBlock : MonoBehaviour
                 GameManager.UpdateScore("Inner");
             }
 
-            //yield return new WaitForSeconds(1f);
-
             EventManager.AllowedDestroyFlying?.Invoke();
-
-            //yield return new WaitForSeconds(1f);
         }
         else
         {
-            //yield return new WaitForSeconds(1f);
-
             StuckPosition = PositionInt;
             StuckRotation = transform.rotation;
 
@@ -113,9 +106,14 @@ public class CubeBlock : MonoBehaviour
             ChangePosition(PositionInt + 120 * Vector3Int.down);
 
             EventManager.Stuck?.Invoke();
-
-            //yield return new WaitForSeconds(1f);
         }
+
+        StartCoroutine(ReadyWithDelay());
+    }
+
+    private IEnumerator ReadyWithDelay()
+    {
+        yield return new WaitForSeconds(1.0f);
 
         gameObject.SetActive(false);
 
@@ -137,10 +135,9 @@ public class CubeBlock : MonoBehaviour
 
                 if (_mapManager.CubeMap.ContainsKey(newCubePos))
                 {
-                    string name = _mapManager.CubeMap[newCubePos].name;
-                    string nameWithoutClone = name.Substring(0, name.Length - 7);
+                    var color = _mapManager.CubeMap[newCubePos].material.color;
 
-                    if (nameWithoutClone == BlockStructure.name)
+                    if (color == BlockColor)
                     {
                         return true;
                     }
@@ -169,10 +166,9 @@ public class CubeBlock : MonoBehaviour
 
                 if (_mapManager.CubeMap.ContainsKey(newCubePos))
                 {
-                    string name = _mapManager.CubeMap[newCubePos].name;
-                    string nameWithoutClone = name.Substring(0, name.Length - 7);
+                    var color = _mapManager.CubeMap[newCubePos].material.color;
 
-                    if (nameWithoutClone == BlockStructure.name)
+                    if (color == BlockColor)
                     {
                         isFoundToDestroy = true;
 
@@ -187,7 +183,7 @@ public class CubeBlock : MonoBehaviour
 
     public void StartMoveDown()
     {
-        StartCoroutine(_moveDownCoroutine);
+        StartCoroutine(MoveDown());
     }
 
     private bool IsDownAvailable(Vector3Int positionInt)
@@ -233,13 +229,6 @@ public class CubeBlock : MonoBehaviour
         FinalPosition = GetFinalPosition();
 
         EventManager.ChangedPosition?.Invoke(PositionInt.x, PositionInt.z);
-        
-        //if (IsStuckHorizontal(PositionInt))
-        //{
-        //    StopCoroutine(_moveDownCoroutine);
-
-        //    DestroyOrStick();
-        //}
     }
 
     private bool IsOnMap(Vector3Int newCubePos)
@@ -273,7 +262,7 @@ public class CubeBlock : MonoBehaviour
         {
             Vector3Int newPos = PositionInt + pos;
 
-            ParticlesPool.Instance.SpawnParticles(newPos);
+            ParticlesPool.Instance.SpawnParticles(newPos, BlockColor);
         }
     }
 

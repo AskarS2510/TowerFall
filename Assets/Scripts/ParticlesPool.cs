@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ParticlesPool : MonoBehaviour
 {
-    [SerializeField] private GameObject _prefabPartice;
+    [SerializeField] private ParticleSystem _prefabParticle;
     public static ParticlesPool Instance;
 
     private int _amountToPool = 20;
-    private List<GameObject> _pool;
+    private List<ParticleSystem> _pool;
     private float _positionOffset = 1.2f;
 
     private void Awake()
@@ -21,25 +21,25 @@ public class ParticlesPool : MonoBehaviour
 
     private void Start()
     {
-        _pool = new List<GameObject>();
+        _pool = new List<ParticleSystem>();
 
         for (int i = 0; i < _amountToPool; i++)
         {
-            GameObject newPrefab = Instantiate(_prefabPartice, transform);
+            ParticleSystem newPrefab = Instantiate(_prefabParticle, transform);
 
-            newPrefab.SetActive(false);
+            newPrefab.gameObject.SetActive(false);
 
             _pool.Add(newPrefab);
         }
     }
 
-    private GameObject GetPooledObject()
+    private ParticleSystem GetPooledObject()
     {
         for (int i = 0; i < _amountToPool; i++)
         {
-            if (!_pool[i].activeInHierarchy)
+            if (!_pool[i].gameObject.activeInHierarchy)
             {
-                _pool[i].SetActive(true);
+                _pool[i].gameObject.SetActive(true);
 
                 return _pool[i];
             }
@@ -48,16 +48,19 @@ public class ParticlesPool : MonoBehaviour
         return null;
     }
 
-    public void SpawnParticles(Vector3Int posInt)
+    public void SpawnParticles(Vector3Int posInt, Color color)
     {
-        GameObject particle = GetPooledObject();
+        ParticleSystem particle = GetPooledObject();
 
         if (particle == null)
             return;
 
+        ParticleSystem.MainModule main = particle.main;
+        main.startColor = color;
+
         particle.transform.position = (Vector3)posInt * _positionOffset;
-        particle.GetComponent<ParticleSystem>().Play();
-        ClearWithDelay(particle);
+        particle.Play();
+        ClearWithDelay(particle.gameObject);
     }
 
     private void ClearWithDelay(GameObject obj)

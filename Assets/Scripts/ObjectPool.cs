@@ -18,6 +18,8 @@ public class ObjectPool : MonoBehaviour
             Instance = this;
         }
 
+        CreatePoolFromChildren();
+
         _amountToPool = _pooledObjects.Count;
 
         int randomPrefabIdx = Random.Range(0, _amountToPool);
@@ -25,6 +27,14 @@ public class ObjectPool : MonoBehaviour
         NextObject = _pooledObjects[randomPrefabIdx];
 
         _lastNext = NextObject;
+    }
+
+    private void CreatePoolFromChildren()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            _pooledObjects.Add(transform.GetChild(i).gameObject);
+        }
     }
 
     public GameObject GetPooledObject()
@@ -47,8 +57,7 @@ public class ObjectPool : MonoBehaviour
     {
         Shuffle(_pooledObjects);
 
-        string name;
-        string nameWithoutBlock;
+        Color color;
 
         int randomPrefabIdx = 0;
 
@@ -58,10 +67,9 @@ public class ObjectPool : MonoBehaviour
             if (MapManager.s_leftColorCubes.Count != 1 && _lastNext == _pooledObjects[i])
                 continue;
 
-            name = _pooledObjects[i].name;
-            nameWithoutBlock = name.Substring(0, name.Length - 6);
+            color = _pooledObjects[i].GetComponent<CubeBlock>().BlockColor;
 
-            if (MapManager.s_leftColorCubes.ContainsKey(nameWithoutBlock))
+            if (MapManager.s_leftColorCubes.ContainsKey(color))
             {
                 randomPrefabIdx = i;
 

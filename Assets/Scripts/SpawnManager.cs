@@ -7,13 +7,10 @@ public class SpawnManager : MonoBehaviour
 
     private int _leftRotateCount, _rightRotateCount;
     private float _positionOffset = 1.2f;
-    private MapManager _mapManager;
-    [SerializeField] private GameObject _mapManagerObj;
+    [SerializeField] private MapManager _mapManager;
 
-    // Start is called before the first frame update
     private void Start()
     {
-        _mapManager = _mapManagerObj.GetComponent<MapManager>();
         _leftRotateCount = 0;
         _rightRotateCount = 0;
 

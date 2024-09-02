@@ -6,11 +6,40 @@ public class PreviewManager : MonoBehaviour
     private GameObject _lastNext;
     [SerializeField] private List<GameObject> _previewObjects = new List<GameObject>();
 
-    // Start is called before the first frame update
     private void Start()
     {
+        CreatePoolFromChildren();
+
+        OffShadowsCasting();
+
         _lastNext = null;
+
         EventManager.SpawnedPlayerBlock.AddListener(ChangePreview);
+
+        ChangePreview();
+    }
+
+    private void CreatePoolFromChildren()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            _previewObjects.Add(transform.GetChild(i).gameObject);
+        }
+    }
+
+    private void OffShadowsCasting()
+    {
+        for (int i = 0; i < _previewObjects.Count; i++)
+        {
+            for (int j = 0; j < _previewObjects[i].transform.childCount; j++)
+            {
+                GameObject cube = _previewObjects[i].transform.GetChild(j).gameObject;
+
+                Renderer renderer = cube.GetComponent<Renderer>();
+
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+        }
     }
 
     private void ChangePreview()

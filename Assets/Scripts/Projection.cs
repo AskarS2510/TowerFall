@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,11 +10,21 @@ public class Projection : MonoBehaviour
 
     void Start()
     {
+        CreatePoolFromChildren();
+
         ChangeProjectionAlpha();
 
         EventManager.StoppedMovement.AddListener(ClearProjection);
         EventManager.SpawnedPlayerBlock.AddListener(ChangeProjection);
         EventManager.ChangedPosition.AddListener((int x, int z) => ChangeProjection());
+    }
+
+    private void CreatePoolFromChildren()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            _projectionObjects.Add(transform.GetChild(i).gameObject);
+        }
     }
 
     private void ChangeProjection()

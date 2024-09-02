@@ -97,3 +97,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CubeID: -1
+  material: {fileID: 2100000, guid: 103f8cbf38f5f3643b918513292875b7, type: 2}

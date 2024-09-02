@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapManager : MonoBehaviour
 {
-    public static Dictionary<string, bool> s_leftColorCubes = new Dictionary<string, bool>();
+    public static Dictionary<Color, bool> s_leftColorCubes = new Dictionary<Color, bool>();
     public int lastUsedID = -1;
     public int CenterMaxIdxX;
     public int CenterMaxIdxZ;
@@ -35,8 +35,6 @@ public class MapManager : MonoBehaviour
 
     private void Start()
     {
-        //Random.seed = 0;
-
         EventManager.Destroyed.AddListener(DestroyWithID);
         EventManager.AllowedDestroyFlying.AddListener(DestroyFlyingCubes);
         EventManager.ExceededSkip.AddListener(AddBottomLayer);
@@ -122,7 +120,7 @@ public class MapManager : MonoBehaviour
         var itemsToRemove = CubeMap.Where(item => item.Value.CubeID == ID).ToArray();
         foreach (var item in itemsToRemove)
         {
-            ParticlesPool.Instance.SpawnParticles(item.Key);
+            ParticlesPool.Instance.SpawnParticles(item.Key, item.Value.material.color);
 
             CubeMap.Remove(item.Key);
             Destroy(item.Value.gameObject);
@@ -189,7 +187,7 @@ public class MapManager : MonoBehaviour
 
         foreach (var item in unvisited)
         {
-            ParticlesPool.Instance.SpawnParticles(item.Key);
+            ParticlesPool.Instance.SpawnParticles(item.Key, item.Value.material.color);
 
             CubeMap.Remove(item.Key);
             Destroy(item.Value.gameObject);
@@ -260,11 +258,10 @@ public class MapManager : MonoBehaviour
 
         foreach (var item in CubeMap)
         {
-            string name = item.Value.name;
-            string nameWithoutCloneAndCube = name.Substring(0, name.Length - 12);
+            var color = item.Value.material.color;
 
-            if (!s_leftColorCubes.ContainsKey(nameWithoutCloneAndCube))
-                s_leftColorCubes.Add(nameWithoutCloneAndCube, true);
+            if (!s_leftColorCubes.ContainsKey(color))
+                s_leftColorCubes.Add(color, true);
         }
     }
 }

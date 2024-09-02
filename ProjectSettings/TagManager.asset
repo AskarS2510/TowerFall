@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CubeToDestroy
   - CubeBlock
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
