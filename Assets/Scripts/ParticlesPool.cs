@@ -8,7 +8,7 @@ public class ParticlesPool : MonoBehaviour
     public static ParticlesPool Instance;
 
     private int _amountToPool = 20;
-    private List<ParticleSystem> _pool;
+    private List<ParticleSystem> _particlesPool;
     private float _positionOffset = 1.2f;
 
     private void Awake()
@@ -21,7 +21,7 @@ public class ParticlesPool : MonoBehaviour
 
     private void Start()
     {
-        _pool = new List<ParticleSystem>();
+        _particlesPool = new List<ParticleSystem>();
 
         for (int i = 0; i < _amountToPool; i++)
         {
@@ -29,7 +29,7 @@ public class ParticlesPool : MonoBehaviour
 
             newPrefab.gameObject.SetActive(false);
 
-            _pool.Add(newPrefab);
+            _particlesPool.Add(newPrefab);
         }
     }
 
@@ -37,11 +37,11 @@ public class ParticlesPool : MonoBehaviour
     {
         for (int i = 0; i < _amountToPool; i++)
         {
-            if (!_pool[i].gameObject.activeInHierarchy)
+            if (!_particlesPool[i].gameObject.activeInHierarchy)
             {
-                _pool[i].gameObject.SetActive(true);
+                _particlesPool[i].gameObject.SetActive(true);
 
-                return _pool[i];
+                return _particlesPool[i];
             }
         }
 

@@ -12,8 +12,8 @@ public static class EventManager
     public static UnityEvent SpawnedPlayerBlock;
     public static UnityEvent<bool, bool> RaisedRotate;
     public static UnityEvent<int, int> RaisedMove;
-    public static UnityEvent TurnedOnSpeed;
-    public static UnityEvent TurnedOffSpeed;
+    public static UnityEvent RaisedSwitchSpeed;
+    public static UnityEvent RaisedDropDown;
     public static UnityEvent UpdatedScore;
     public static UnityEvent UpdatedSkip;
     public static UnityEvent ExceededSkip;
@@ -39,7 +39,7 @@ public static class EventManager
         StartedGame = new UnityEvent();
         GameOver = new UnityEvent();
         RestartedGame = new UnityEvent();
-        TurnedOnSpeed = new UnityEvent();
-        TurnedOffSpeed = new UnityEvent();
+        RaisedSwitchSpeed = new UnityEvent();
+        RaisedDropDown = new UnityEvent();
     }
 }

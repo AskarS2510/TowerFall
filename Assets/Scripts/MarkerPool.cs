@@ -11,6 +11,15 @@ public class MarkerPool : MonoBehaviour
 
     private void Start()
     {
+        CreatePool();
+
+        EventManager.ChangedPosition.AddListener(ChangeMarkerPosition);
+        EventManager.StoppedMovement.AddListener(ClearPool);
+        EventManager.SpawnedPlayerBlock.AddListener(SpawnMarker);
+    }
+
+    private void CreatePool()
+    {
         _pool = new List<GameObject>();
 
         for (int i = 0; i < _amountToPool; i++)
@@ -21,10 +30,6 @@ public class MarkerPool : MonoBehaviour
 
             _pool.Add(newPrefab);
         }
-
-        EventManager.ChangedPosition.AddListener(ChangeMarkerPosition);
-        EventManager.StoppedMovement.AddListener(ClearPool);
-        EventManager.SpawnedPlayerBlock.AddListener(SpawnMarker);
     }
 
     private GameObject GetPooledObject()

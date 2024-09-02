@@ -29,11 +29,11 @@ public class PreviewManager : MonoBehaviour
 
     private void OffShadowsCasting()
     {
-        for (int i = 0; i < _previewObjects.Count; i++)
+        foreach (var item in _previewObjects)
         {
-            for (int j = 0; j < _previewObjects[i].transform.childCount; j++)
+            for (int i = 0; i < item.transform.childCount; i++)
             {
-                GameObject cube = _previewObjects[i].transform.GetChild(j).gameObject;
+                GameObject cube = item.transform.GetChild(i).gameObject;
 
                 Renderer renderer = cube.GetComponent<Renderer>();
 

@@ -13,6 +13,7 @@ public class Projection : MonoBehaviour
         CreatePoolFromChildren();
 
         ChangeProjectionAlpha();
+        OffShadowsCasting();
 
         EventManager.StoppedMovement.AddListener(ClearProjection);
         EventManager.SpawnedPlayerBlock.AddListener(ChangeProjection);
@@ -61,6 +62,21 @@ public class Projection : MonoBehaviour
                 color.a = _alphaProjection;
 
                 material.color = color;
+            }
+        }
+    }
+
+    private void OffShadowsCasting()
+    {
+        foreach (var item in _projectionObjects)
+        {
+            for (int i = 0; i < item.transform.childCount; i++)
+            {
+                GameObject cube = item.transform.GetChild(i).gameObject;
+
+                Renderer renderer = cube.GetComponent<Renderer>();
+
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEngine;
 
 public class CubeBlock : MonoBehaviour
@@ -13,15 +14,19 @@ public class CubeBlock : MonoBehaviour
     public Vector3Int FinalPosition;
     public Color BlockColor;
 
-    private static float s_speededMoveDownTime = 0.1f;
-    private static float s_defaultMoveDownTime = 0.5f;
-    private static float s_moveDownTime = s_defaultMoveDownTime;
+    private float _speededMoveDownTime = 0.1f;
+    private float _defaultMoveDownTime = 0.5f;
+    private float _moveDownTime;
+    private bool _isSpeeded;
     private float _positionOffset = 1.2f;
     [SerializeField] private MapManager _mapManager;
 
     private void OnEnable()
     {
-        EventManager.RaisedMove.AddListener(MoveHorizontal);
+        _isSpeeded = false;
+        _moveDownTime = _defaultMoveDownTime;
+
+        GiveControls();
     }
 
     private void Awake()
@@ -30,9 +35,7 @@ public class CubeBlock : MonoBehaviour
 
         BlockColor = BlockStructure.GetComponent<Cube>().material.color;
 
-        EventManager.TurnedOnSpeed.AddListener(SpeedUpMoveDown);
-
-        EventManager.TurnedOffSpeed.AddListener(SlowMoveDown);
+        //EventManager.TurnedOffSpeed.AddListener(SlowMoveDown);
 
         gameObject.SetActive(false);
     }
@@ -43,7 +46,7 @@ public class CubeBlock : MonoBehaviour
 
         while (true)
         {
-            yield return new WaitForSeconds(s_moveDownTime);
+            yield return new WaitForSeconds(_moveDownTime);
 
             if (PositionInt == FinalPosition)
             {
@@ -78,10 +81,24 @@ public class CubeBlock : MonoBehaviour
         return !IsDownAvailable(position) || IsStuckHorizontal(position);
     }
 
+    private void GiveControls()
+    {
+        EventManager.RaisedMove.AddListener(MoveHorizontal);
+        EventManager.RaisedSwitchSpeed.AddListener(SwitchMoveDownSpeed);
+        EventManager.RaisedDropDown.AddListener(DropDown);
+    }
+
+    private void RemoveControls()
+    {
+        EventManager.RaisedMove.RemoveListener(MoveHorizontal);
+        EventManager.RaisedSwitchSpeed.RemoveListener(SwitchMoveDownSpeed);
+        EventManager.RaisedDropDown.RemoveListener(DropDown);
+    }
+
     private void DestroyOrStick()
     {
         EventManager.StoppedMovement?.Invoke();
-        EventManager.RaisedMove.RemoveListener(MoveHorizontal);
+        RemoveControls();
 
         if (DestroyNearbySameColors())
         {
@@ -328,12 +345,30 @@ public class CubeBlock : MonoBehaviour
         }
     }
 
-    private void SpeedUpMoveDown()
+    private void SwitchMoveDownSpeed()
     {
-        s_moveDownTime = s_speededMoveDownTime;
+        Debug.Log("SwitchMoveDownSpeed + isSpeeded = " + _isSpeeded);
+
+        if (_isSpeeded)
+        {
+            _isSpeeded = false;
+            _moveDownTime = _defaultMoveDownTime;
+        }
+        else
+        {
+            _isSpeeded = true;
+            _moveDownTime = _speededMoveDownTime;
+        }
     }
+
     private void SlowMoveDown()
     {
-        s_moveDownTime = s_defaultMoveDownTime;
+        _moveDownTime = _defaultMoveDownTime;
+    }
+
+    private void DropDown()
+    {
+        ChangePosition(FinalPosition);
+        RemoveControls();
     }
 }

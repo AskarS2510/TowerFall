@@ -7,11 +7,7 @@ public class ControlButton : MonoBehaviour
     private CubeBlock _cubeBlock;
     [SerializeField] private int _xIndex, _zIndex;
     [SerializeField] private bool _rotateLeft, _rotateRight;
-    [SerializeField] private bool _speedDown;
-    //public CubeBlock Block;
 
-
-    // Start is called before the first frame update
     private void Start()
     {
         //if (SystemInfo.deviceType == DeviceType.Desktop)
@@ -73,13 +69,11 @@ public class ControlButton : MonoBehaviour
 
     public void ClickedSpeedDown()
     {
-        if (_speedDown)
-            EventManager.TurnedOnSpeed?.Invoke();
+        EventManager.RaisedSwitchSpeed?.Invoke();
     }
 
-    public void UnclickedSpeedDown()
+    public void ClickedDropDown()
     {
-        if (_speedDown)
-            EventManager.TurnedOffSpeed?.Invoke();
+        EventManager.RaisedDropDown?.Invoke();
     }
 }

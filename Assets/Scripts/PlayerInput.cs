@@ -113,11 +113,14 @@ public class PlayerInput : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
             EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
 
-        if (Input.GetKey(KeyCode.DownArrow))
-            EventManager.TurnedOnSpeed?.Invoke();
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+            EventManager.RaisedSwitchSpeed?.Invoke();
 
-        if (Input.GetKeyUp(KeyCode.DownArrow))
-            EventManager.TurnedOffSpeed?.Invoke();
+        if (Input.GetKeyDown(KeyCode.Space))
+            EventManager.RaisedDropDown?.Invoke();
+
+        //if (Input.GetKeyUp(KeyCode.DownArrow))
+        //    EventManager.TurnedOffSpeed?.Invoke();
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
