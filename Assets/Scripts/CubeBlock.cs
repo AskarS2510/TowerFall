@@ -35,8 +35,6 @@ public class CubeBlock : MonoBehaviour
 
         BlockColor = BlockStructure.GetComponent<Cube>().material.color;
 
-        //EventManager.TurnedOffSpeed.AddListener(SlowMoveDown);
-
         gameObject.SetActive(false);
     }
 
@@ -279,7 +277,7 @@ public class CubeBlock : MonoBehaviour
         {
             Vector3Int newPos = PositionInt + pos;
 
-            ParticlesPool.Instance.SpawnParticles(newPos, BlockColor);
+            ParticlesAudioPool.Instance.SpawnParticles(newPos, BlockColor);
         }
     }
 
@@ -347,8 +345,6 @@ public class CubeBlock : MonoBehaviour
 
     private void SwitchMoveDownSpeed()
     {
-        Debug.Log("SwitchMoveDownSpeed + isSpeeded = " + _isSpeeded);
-
         if (_isSpeeded)
         {
             _isSpeeded = false;

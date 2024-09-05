@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParticlesPool : MonoBehaviour
+public class ParticlesAudioPool : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _prefabParticle;
-    public static ParticlesPool Instance;
+    [SerializeField] private ParticleSystem _prefabParticleAudio;
+    public static ParticlesAudioPool Instance;
 
     private int _amountToPool = 20;
     private List<ParticleSystem> _particlesPool;
@@ -25,7 +25,7 @@ public class ParticlesPool : MonoBehaviour
 
         for (int i = 0; i < _amountToPool; i++)
         {
-            ParticleSystem newPrefab = Instantiate(_prefabParticle, transform);
+            ParticleSystem newPrefab = Instantiate(_prefabParticleAudio, transform);
 
             newPrefab.gameObject.SetActive(false);
 

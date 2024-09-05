@@ -120,7 +120,7 @@ public class MapManager : MonoBehaviour
         var itemsToRemove = CubeMap.Where(item => item.Value.CubeID == ID).ToArray();
         foreach (var item in itemsToRemove)
         {
-            ParticlesPool.Instance.SpawnParticles(item.Key, item.Value.material.color);
+            ParticlesAudioPool.Instance.SpawnParticles(item.Key, item.Value.material.color);
 
             CubeMap.Remove(item.Key);
             Destroy(item.Value.gameObject);
@@ -187,7 +187,7 @@ public class MapManager : MonoBehaviour
 
         foreach (var item in unvisited)
         {
-            ParticlesPool.Instance.SpawnParticles(item.Key, item.Value.material.color);
+            ParticlesAudioPool.Instance.SpawnParticles(item.Key, item.Value.material.color);
 
             CubeMap.Remove(item.Key);
             Destroy(item.Value.gameObject);

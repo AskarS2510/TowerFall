@@ -19,6 +19,8 @@ public class PlayerInput : MonoBehaviour
 
     private void Start()
     {
+        //Application.targetFrameRate = 30;
+
         EventManager.RaisedRotate.AddListener(RotateControls);
     }
 

@@ -5,13 +5,13 @@ public class CameraController : MonoBehaviour
     public static bool s_isRotating;
 
     private int _rotateSpeed = 360;
+    //private float _rotateSpeed = 20f;
     private int _direction;
     private Quaternion _desiredRotQ;
     private float _positionOffset = 1.2f;
     private float _startMinimapRotationY = -45;
     [SerializeField] private GameObject _minimapCamera;
 
-    // Start is called before the first frame update
     private void Start()
     {
         s_isRotating = false;
@@ -21,12 +21,12 @@ public class CameraController : MonoBehaviour
         EventManager.SpawnedPlayerBlock.AddListener(ResetPosition);
     }
 
-    // Update is called once per frame
     private void LateUpdate()
     {
         if (s_isRotating)
         {
             var step = _rotateSpeed * Time.deltaTime;
+            //var step = _rotateSpeed;
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, _desiredRotQ, step);
 
