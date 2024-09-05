@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class RotationController : MonoBehaviour
 {
     public static bool s_isRotating;
 

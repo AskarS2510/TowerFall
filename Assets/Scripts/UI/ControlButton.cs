@@ -50,7 +50,7 @@ public class ControlButton : MonoBehaviour
     {
         if (_rotateLeft == true || _rotateRight == true)
         {
-            if (CameraController.s_isRotating)
+            if (RotationController.s_isRotating)
             {
                 return;
             }

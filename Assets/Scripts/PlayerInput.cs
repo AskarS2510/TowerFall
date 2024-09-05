@@ -126,14 +126,14 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            if (!CameraController.s_isRotating)
+            if (!RotationController.s_isRotating)
             {
                 EventManager.RaisedRotate?.Invoke(k_isLeftRotate, !k_isRightRotate);
             }
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            if (!CameraController.s_isRotating)
+            if (!RotationController.s_isRotating)
             {
                 EventManager.RaisedRotate?.Invoke(!k_isLeftRotate, k_isRightRotate);
             }
