@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class ParticlesAudioPool : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _prefabParticleAudio;
+    [SerializeField] private GameObject _prefabParticleAudio;
     public static ParticlesAudioPool Instance;
 
     private int _amountToPool = 20;
-    private List<ParticleSystem> _particlesPool;
+    private List<GameObject> _particlesPool;
+    private List<ParticleSystem> _particlesComponents;
+    private List<AudioSource> _audioComponents;
     private float _positionOffset = 1.2f;
 
     private void Awake()
@@ -21,46 +23,55 @@ public class ParticlesAudioPool : MonoBehaviour
 
     private void Start()
     {
-        _particlesPool = new List<ParticleSystem>();
+        _particlesPool = new List<GameObject>();
+        _particlesComponents = new List<ParticleSystem>();
+        _audioComponents = new List<AudioSource>();
 
         for (int i = 0; i < _amountToPool; i++)
         {
-            ParticleSystem newPrefab = Instantiate(_prefabParticleAudio, transform);
+            GameObject newPrefab = Instantiate(_prefabParticleAudio, transform);
 
-            newPrefab.gameObject.SetActive(false);
+            newPrefab.SetActive(false);
 
             _particlesPool.Add(newPrefab);
+            _particlesComponents.Add(newPrefab.GetComponent<ParticleSystem>());
+            _audioComponents.Add(newPrefab.GetComponent<AudioSource>());
         }
+
+        EventManager.RaisedVolume.AddListener(ChangeVolume);
     }
 
-    private ParticleSystem GetPooledObject()
+    private int GetPooledObjectIdx()
     {
         for (int i = 0; i < _amountToPool; i++)
         {
-            if (!_particlesPool[i].gameObject.activeInHierarchy)
+            if (!_particlesPool[i].activeInHierarchy)
             {
-                _particlesPool[i].gameObject.SetActive(true);
+                _particlesPool[i].SetActive(true);
 
-                return _particlesPool[i];
+                return i;
             }
         }
 
-        return null;
+        return -1;
     }
 
     public void SpawnParticles(Vector3Int posInt, Color color)
     {
-        ParticleSystem particle = GetPooledObject();
+        int idx = GetPooledObjectIdx();
 
-        if (particle == null)
+        if (idx == -1)
             return;
 
-        ParticleSystem.MainModule main = particle.main;
+        GameObject pooledObject = _particlesPool[idx];
+
+        ParticleSystem.MainModule main = _particlesComponents[idx].main;
         main.startColor = color;
 
-        particle.transform.position = (Vector3)posInt * _positionOffset;
-        particle.Play();
-        ClearWithDelay(particle.gameObject);
+        pooledObject.transform.position = (Vector3)posInt * _positionOffset;
+        _particlesComponents[idx].Play();
+
+        ClearWithDelay(pooledObject);
     }
 
     private void ClearWithDelay(GameObject obj)
@@ -73,5 +84,16 @@ public class ParticlesAudioPool : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         obj.SetActive(false);
+    }
+
+    private void ChangeVolume(string sourceName, float volume)
+    {
+        if (sourceName != "Effects")
+            return;
+
+        foreach (var item in _audioComponents)
+        {
+            item.volume = volume;
+        }
     }
 }

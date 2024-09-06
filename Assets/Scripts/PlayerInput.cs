@@ -6,8 +6,6 @@ public class PlayerInput : MonoBehaviour
     private int _upArrowZ = 1;
     private int _leftArrowX = -1;
     private int _leftArrowZ = 0;
-    private const bool k_isLeftRotate = true;
-    private const bool k_isRightRotate = true;
     private Vector2 _startPos;
     private Vector2 _currentPos;
     private const float _swipeScreenPercent = 0.1f;
@@ -21,7 +19,10 @@ public class PlayerInput : MonoBehaviour
     {
         //Application.targetFrameRate = 30;
 
-        EventManager.RaisedRotate.AddListener(RotateControls);
+        EventManager.DoneRotation.AddListener(RotateControls);
+
+        EventManager.PausedGame.AddListener(() => gameObject.SetActive(false));
+        EventManager.UnpausedGame.AddListener(() => gameObject.SetActive(true));
     }
 
     private void Update()
@@ -126,17 +127,11 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            if (!RotationController.s_isRotating)
-            {
-                EventManager.RaisedRotate?.Invoke(k_isLeftRotate, !k_isRightRotate);
-            }
+            EventManager.RaisedRotate?.Invoke(true, false);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            if (!RotationController.s_isRotating)
-            {
-                EventManager.RaisedRotate?.Invoke(!k_isLeftRotate, k_isRightRotate);
-            }
+            EventManager.RaisedRotate?.Invoke(false, true);
         }
     }
 

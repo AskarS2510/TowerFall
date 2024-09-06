@@ -20,7 +20,7 @@ public class SpawnManager : MonoBehaviour
 
         EventManager.ReadyForNextBlock.AddListener(SpawnPlayerBlock);
         EventManager.Stuck.AddListener(SpawnStuckBlock);
-        EventManager.RaisedRotate.AddListener(RotateSpawnPostiton);
+        EventManager.DoneRotation.AddListener(RotateSpawnPostiton);
     }
 
     private void SpawnPlayerBlock()

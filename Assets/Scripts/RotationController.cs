@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class RotationController : MonoBehaviour
 {
-    public static bool s_isRotating;
+    public bool _isRotating;
 
     private int _rotateSpeed = 360;
     //private float _rotateSpeed = 20f;
@@ -14,7 +14,7 @@ public class RotationController : MonoBehaviour
 
     private void Start()
     {
-        s_isRotating = false;
+        _isRotating = false;
 
         EventManager.RaisedRotate.AddListener(StartRotation);
         EventManager.ChangedPosition.AddListener(ChangeMinimapPosition);
@@ -23,7 +23,7 @@ public class RotationController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (s_isRotating)
+        if (_isRotating)
         {
             var step = _rotateSpeed * Time.deltaTime;
             //var step = _rotateSpeed;
@@ -36,14 +36,19 @@ public class RotationController : MonoBehaviour
 
             if (transform.rotation.eulerAngles == _desiredRotQ.eulerAngles)
             {
-                s_isRotating = false;
+                _isRotating = false;
+
+                if (_direction == 1)
+                    EventManager.DoneRotation?.Invoke(true, false);
+                else
+                    EventManager.DoneRotation?.Invoke(false, true);
             }
         }
     }
 
     public void StartRotation(bool left, bool right)
     {
-        if (s_isRotating)
+        if (_isRotating)
         {
             return;
         }
@@ -65,7 +70,7 @@ public class RotationController : MonoBehaviour
 
         _desiredRotQ.eulerAngles = transform.rotation.eulerAngles + new Vector3(0, _direction * 90, 0);
 
-        s_isRotating = true;
+        _isRotating = true;
     }
 
     private void ChangeMinimapPosition(int xIndex, int zIndex)

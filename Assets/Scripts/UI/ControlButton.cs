@@ -22,7 +22,7 @@ public class ControlButton : MonoBehaviour
         _button.onClick.AddListener(CheckRotatePress);
         _button.onClick.AddListener(CheckMovePress);
         
-        EventManager.RaisedRotate.AddListener(RotateControls);
+        EventManager.DoneRotation.AddListener(RotateControls);
     }
 
     private void RotateControls(bool left, bool right)
@@ -50,11 +50,6 @@ public class ControlButton : MonoBehaviour
     {
         if (_rotateLeft == true || _rotateRight == true)
         {
-            if (RotationController.s_isRotating)
-            {
-                return;
-            }
-
             EventManager.RaisedRotate?.Invoke(_rotateLeft, _rotateRight);
         }
     }
