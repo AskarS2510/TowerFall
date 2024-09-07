@@ -8,21 +8,25 @@ public class PlayerInput : MonoBehaviour
     private int _leftArrowZ = 0;
     private Vector2 _startPos;
     private Vector2 _currentPos;
-    private const float _swipeScreenPercent = 0.1f;
-    private readonly float _swipeForce = _swipeScreenPercent * Screen.width;
-    private readonly float _doubleSwipe = _swipeScreenPercent * Screen.width * 2;
+    private float _swipeForce;
+    private float _doubleSwipe;
+    private float _sensitivity;
     // Косинус и синус -45 градусов
     private readonly float _cos = Mathf.Sqrt(2) / 2;
     private readonly float _sin = -Mathf.Sqrt(2) / 2;
 
     private void Start()
     {
+        SetSensetivity(0.5f);
+
         //Application.targetFrameRate = 30;
 
         EventManager.DoneRotation.AddListener(RotateControls);
 
         EventManager.PausedGame.AddListener(() => gameObject.SetActive(false));
         EventManager.UnpausedGame.AddListener(() => gameObject.SetActive(true));
+
+        EventManager.RaisedSlider.AddListener(ChangeSensitivity);
     }
 
     private void Update()
@@ -168,5 +172,21 @@ public class PlayerInput : MonoBehaviour
 
             _leftArrowZ = -temp;
         }
+    }
+
+    private void ChangeSensitivity(string sourceName, float sensitivity)
+    {
+        if (sourceName != "Sensitivity")
+            return;
+
+        SetSensetivity(sensitivity);
+    }
+
+    private void SetSensetivity(float sensitivity)
+    {
+        _sensitivity = sensitivity;
+
+        _swipeForce = Screen.width * Mathf.Pow(80, -_sensitivity);
+        _doubleSwipe = _swipeForce * 2;
     }
 }

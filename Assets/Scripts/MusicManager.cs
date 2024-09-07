@@ -10,7 +10,7 @@ public class MusicManager : MonoBehaviour
     {
         _musicSource = GetComponent<AudioSource>();
 
-        EventManager.RaisedVolume.AddListener(ChangeVolume);
+        EventManager.RaisedSlider.AddListener(ChangeVolume);
     }
 
     private void ChangeVolume(string sourceName, float volume)

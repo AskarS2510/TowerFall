@@ -38,7 +38,7 @@ public class ParticlesAudioPool : MonoBehaviour
             _audioComponents.Add(newPrefab.GetComponent<AudioSource>());
         }
 
-        EventManager.RaisedVolume.AddListener(ChangeVolume);
+        EventManager.RaisedSlider.AddListener(ChangeVolume);
     }
 
     private int GetPooledObjectIdx()
