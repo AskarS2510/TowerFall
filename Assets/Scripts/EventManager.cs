@@ -23,6 +23,7 @@ public static class EventManager
     public static UnityEvent RestartedGame;
     public static UnityEvent PausedGame;
     public static UnityEvent UnpausedGame;
+    public static UnityEvent EndedTutorial;
     public static UnityEvent<string, float> RaisedSlider;
 
     static EventManager()
@@ -48,6 +49,7 @@ public static class EventManager
         RaisedDropDown = new UnityEvent();
         PausedGame = new UnityEvent();
         UnpausedGame = new UnityEvent();
+        EndedTutorial = new UnityEvent();
         RaisedSlider = new UnityEvent<string, float>();
     }
 }

@@ -49,7 +49,8 @@ public class SpawnManager : MonoBehaviour
 
         cubeBlock.RotateFromCount(_leftRotateCount, _rightRotateCount);
 
-        cubeBlock.StartMoveDown();
+        if (GameManager.IsTutorialDone)
+            cubeBlock.StartMoveDown();
 
         EventManager.SpawnedPlayerBlock?.Invoke();
     }

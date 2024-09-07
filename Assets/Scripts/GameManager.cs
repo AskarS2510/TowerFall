@@ -1,6 +1,7 @@
 
 public static class GameManager
 {
+    public static bool IsTutorialDone;
     public static long Score;
     public static int SkipCount;
     public static int maxAllowedSkipCount;
@@ -8,6 +9,8 @@ public static class GameManager
 
     static GameManager()
     {
+        IsTutorialDone = false;
+
         ResetStats();
 
         EventManager.RestartedGame.AddListener(ResetStats);
