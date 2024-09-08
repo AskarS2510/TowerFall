@@ -21,7 +21,7 @@ public class ControlButton : MonoBehaviour
 
         _button.onClick.AddListener(CheckRotatePress);
         _button.onClick.AddListener(CheckMovePress);
-        
+
         EventManager.DoneRotation.AddListener(RotateControls);
     }
 

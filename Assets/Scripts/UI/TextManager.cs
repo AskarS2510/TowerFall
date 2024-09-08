@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -10,22 +11,31 @@ public class TextManager : MonoBehaviour
     {
         textMesh = GetComponent<TextMeshProUGUI>();
 
-        EventManager.UpdatedScore.AddListener(UpdateText);
-        EventManager.UpdatedSkip.AddListener(UpdateText);
+        EventManager.UpdatedSkip.AddListener(UpdateSkip);
+        EventManager.UpdatedTime.AddListener(UpdateLeftTime);
 
-        UpdateText();
+        UpdateSkip();
+        UpdateLeftTime();
     }
 
-    private void UpdateText()
+    private void UpdateSkip()
     {
-        if (gameObject.name == "Score Text")
-        {
-            textMesh.text = GameManager.Score.ToString();
-        }
+        if (gameObject.name != "Skip Text")
+            return;
 
-        if (gameObject.name == "Remain Text")
-        {
-            textMesh.text = GameManager.SkipLeft.ToString();
-        }
+        textMesh.text = GameManager.SkipLeft.ToString();
+    }
+
+    private void UpdateLeftTime()
+    {
+        if (gameObject.name != "Left Time Text")
+            return;
+
+        float time = GameManager.LeftTime;
+
+        TimeSpan result = TimeSpan.FromSeconds(time);
+        string fromTimeString = result.ToString("m':'ss");
+
+        textMesh.text = fromTimeString;
     }
 }

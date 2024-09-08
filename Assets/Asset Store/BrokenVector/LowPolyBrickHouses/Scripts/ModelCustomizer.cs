@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ModelCustomizer : MonoBehaviour {
+public class ModelCustomizer : MonoBehaviour
+{
 #if UNITY_EDITOR
 
     private GameObject[] parts;
@@ -51,7 +50,8 @@ public class ModelCustomizer : MonoBehaviour {
         return bools;
     }
 
-    public void SetBool(int i, bool b){
+    public void SetBool(int i, bool b)
+    {
         bools[i] = b;
         RefreshVisibility();
     }

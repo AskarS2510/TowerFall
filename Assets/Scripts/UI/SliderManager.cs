@@ -16,7 +16,7 @@ public class SliderManager : MonoBehaviour
 
         _slider.onValueChanged.AddListener(ChangeValue);
 
-        if ( _resetButton != null)
+        if (_resetButton != null)
             _resetButton.onClick.AddListener(ResetValue);
     }
 

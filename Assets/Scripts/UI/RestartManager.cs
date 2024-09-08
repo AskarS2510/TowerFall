@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class RestartManager : MonoBehaviour
 {
-    // Start is called before the first frame update
     private void Start()
     {
         gameObject.SetActive(false);

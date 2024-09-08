@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using UnityEngine;
+﻿using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 [CustomEditor(typeof(ModelCustomizer))]
 [CanEditMultipleObjects]
-public class ModelCustomizerInspector : Editor {
+public class ModelCustomizerInspector : Editor
+{
 
     private ModelCustomizer customizer;
     private bool[] bools;

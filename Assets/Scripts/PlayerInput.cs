@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
@@ -28,8 +27,6 @@ public class PlayerInput : MonoBehaviour
         EventManager.UnpausedGame.AddListener(() => gameObject.SetActive(true));
 
         EventManager.RaisedSlider.AddListener(ChangeSensitivity);
-
-        EventManager.StartedGame.AddListener(() => StartCoroutine(StartTouchTutorial()));
     }
 
     private void Update()
@@ -194,37 +191,5 @@ public class PlayerInput : MonoBehaviour
 
         _swipeForce = Screen.width * Mathf.Pow(80, -_sensitivity);
         _doubleSwipe = _swipeForce * 2;
-    }
-
-    private IEnumerator StartTouchTutorial()
-    {
-        float delay = 0.5f;
-
-
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
-
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
-
-        GameManager.IsTutorialDone = true;
-
-        EventManager.EndedTutorial?.Invoke();
-
-        CubeBlock cubeBlock = ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>();
-
-        cubeBlock.StartMoveDown();
     }
 }

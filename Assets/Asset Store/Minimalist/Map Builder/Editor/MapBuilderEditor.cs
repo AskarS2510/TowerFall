@@ -1,6 +1,6 @@
-using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
+using UnityEngine;
 
 namespace Minimalist.MapBuilder
 {

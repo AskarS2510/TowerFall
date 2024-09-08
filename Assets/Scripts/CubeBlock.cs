@@ -39,6 +39,7 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator MoveDown()
     {
+
         FinalPosition = GetFinalPosition();
 
         while (true)
@@ -83,6 +84,8 @@ public class CubeBlock : MonoBehaviour
         EventManager.RaisedMove.AddListener(MoveHorizontal);
         EventManager.RaisedSwitchSpeed.AddListener(SwitchMoveDownSpeed);
         EventManager.RaisedDropDown.AddListener(DropDown);
+
+        EventManager.GameOver.AddListener(OnGameOver);
     }
 
     private void RemoveControls()
@@ -90,6 +93,8 @@ public class CubeBlock : MonoBehaviour
         EventManager.RaisedMove.RemoveListener(MoveHorizontal);
         EventManager.RaisedSwitchSpeed.RemoveListener(SwitchMoveDownSpeed);
         EventManager.RaisedDropDown.RemoveListener(DropDown);
+
+        EventManager.GameOver.RemoveListener(OnGameOver);
     }
 
     private void DestroyOrStick()
@@ -106,7 +111,7 @@ public class CubeBlock : MonoBehaviour
 
             foreach (var item in DefaultBlockScheme)
             {
-                GameManager.UpdateScore("Inner");
+                GameManager.UpdateScore();
             }
 
             EventManager.AllowedDestroyFlying?.Invoke();
@@ -127,7 +132,9 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator ReadyWithDelay()
     {
-        yield return new WaitForSeconds(1.0f);
+        EventManager.DoneDestruction?.Invoke();
+
+        yield return new WaitForSeconds(GameManager.DelayBetweenWaves);
 
         gameObject.SetActive(false);
 
@@ -365,5 +372,23 @@ public class CubeBlock : MonoBehaviour
     {
         ChangePosition(FinalPosition);
         RemoveControls();
+    }
+
+    public void OnGameOver()
+    {
+        StopCoroutine(MoveDown());
+
+        EventManager.StoppedMovement?.Invoke();
+        RemoveControls();
+
+        StuckPosition = PositionInt;
+        StuckRotation = transform.rotation;
+
+        // Убираем объект из видимости
+        ChangePosition(PositionInt + 120 * Vector3Int.down);
+
+        EventManager.Stuck?.Invoke();
+
+        gameObject.SetActive(false);
     }
 }

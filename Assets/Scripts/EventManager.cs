@@ -15,8 +15,8 @@ public static class EventManager
     public static UnityEvent<int, int> RaisedMove;
     public static UnityEvent RaisedSwitchSpeed;
     public static UnityEvent RaisedDropDown;
-    public static UnityEvent UpdatedScore;
     public static UnityEvent UpdatedSkip;
+    public static UnityEvent UpdatedTime;
     public static UnityEvent ExceededSkip;
     public static UnityEvent StartedGame;
     public static UnityEvent GameOver;
@@ -24,6 +24,7 @@ public static class EventManager
     public static UnityEvent PausedGame;
     public static UnityEvent UnpausedGame;
     public static UnityEvent EndedTutorial;
+    public static UnityEvent DoneDestruction;
     public static UnityEvent<string, float> RaisedSlider;
 
     static EventManager()
@@ -39,8 +40,8 @@ public static class EventManager
         RaisedRotate = new UnityEvent<bool, bool>();
         DoneRotation = new UnityEvent<bool, bool>();
         RaisedMove = new UnityEvent<int, int>();
-        UpdatedScore = new UnityEvent();
         UpdatedSkip = new UnityEvent();
+        UpdatedTime = new UnityEvent();
         ExceededSkip = new UnityEvent();
         StartedGame = new UnityEvent();
         GameOver = new UnityEvent();
@@ -50,6 +51,7 @@ public static class EventManager
         PausedGame = new UnityEvent();
         UnpausedGame = new UnityEvent();
         EndedTutorial = new UnityEvent();
+        DoneDestruction = new UnityEvent();
         RaisedSlider = new UnityEvent<string, float>();
     }
 }

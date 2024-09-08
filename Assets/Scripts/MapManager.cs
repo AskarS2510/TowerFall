@@ -125,7 +125,7 @@ public class MapManager : MonoBehaviour
             CubeMap.Remove(item.Key);
             Destroy(item.Value.gameObject);
 
-            GameManager.UpdateScore("Inner");
+            GameManager.UpdateScore();
         }
     }
 
@@ -192,7 +192,7 @@ public class MapManager : MonoBehaviour
             CubeMap.Remove(item.Key);
             Destroy(item.Value.gameObject);
 
-            GameManager.UpdateScore("Flying");
+            GameManager.UpdateScore();
         }
     }
 

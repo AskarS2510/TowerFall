@@ -7,10 +7,9 @@ public class ParticlesAudioPool : MonoBehaviour
     [SerializeField] private GameObject _prefabParticleAudio;
     public static ParticlesAudioPool Instance;
 
-    private int _amountToPool = 20;
+    private int _amountToPool = 25;
     private List<GameObject> _particlesPool;
     private List<ParticleSystem> _particlesComponents;
-    private List<AudioSource> _audioComponents;
     private float _positionOffset = 1.2f;
 
     private void Awake()
@@ -25,7 +24,6 @@ public class ParticlesAudioPool : MonoBehaviour
     {
         _particlesPool = new List<GameObject>();
         _particlesComponents = new List<ParticleSystem>();
-        _audioComponents = new List<AudioSource>();
 
         for (int i = 0; i < _amountToPool; i++)
         {
@@ -35,10 +33,7 @@ public class ParticlesAudioPool : MonoBehaviour
 
             _particlesPool.Add(newPrefab);
             _particlesComponents.Add(newPrefab.GetComponent<ParticleSystem>());
-            _audioComponents.Add(newPrefab.GetComponent<AudioSource>());
         }
-
-        EventManager.RaisedSlider.AddListener(ChangeVolume);
     }
 
     private int GetPooledObjectIdx()
@@ -81,19 +76,8 @@ public class ParticlesAudioPool : MonoBehaviour
 
     private IEnumerator ClearParticle(GameObject obj)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(GameManager.DelayBetweenWaves);
 
         obj.SetActive(false);
-    }
-
-    private void ChangeVolume(string sourceName, float volume)
-    {
-        if (sourceName != "Effects")
-            return;
-
-        foreach (var item in _audioComponents)
-        {
-            item.volume = volume;
-        }
     }
 }

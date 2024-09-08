@@ -25,6 +25,9 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnPlayerBlock()
     {
+        if (GameManager.IsGameOver)
+            return;
+
         if (_mapManager.CubeMap.Count == 0)
         {
             EventManager.GameOver?.Invoke();

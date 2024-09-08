@@ -1,45 +1,71 @@
 
-public static class GameManager
+using System.Collections;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
 {
     public static bool IsTutorialDone;
-    public static long Score;
+    public static int DestroyedOnWave;
+    public static float DelayBetweenWaves;
+    public static float LeftTime;
+    public static bool IsGameOver;
     public static int SkipCount;
-    public static int maxAllowedSkipCount;
+    public static int MaxAllowedSkipCount;
     public static int SkipLeft;
+    public static IEnumerator _timer;
 
-    static GameManager()
+    private void Start()
     {
         IsTutorialDone = false;
+        DelayBetweenWaves = 1.2f;
 
         ResetStats();
 
-        EventManager.RestartedGame.AddListener(ResetStats);
+        EventManager.StartedGame.AddListener(StartGame);
+
+        EventManager.RestartedGame.AddListener(RestartGame);
+
+        EventManager.GameOver.AddListener(GameOver);
+
+        EventManager.SpawnedPlayerBlock.AddListener(ResetDestroyedCount);
+
+        EventManager.DoneDestruction.AddListener(AddTime);
     }
 
-    public static void UpdateScore(string sourceName)
+    public static void UpdateScore()
     {
-        if (sourceName == "Flying")
-        {
-            Score += 20;
-        }
-
-        if (sourceName == "Inner")
-        {
-            Score += 20;
-        }
-
-        EventManager.UpdatedScore?.Invoke();
+        DestroyedOnWave++;
     }
 
+    private void GameOver()
+    {
+        StopCoroutine(_timer);
+        _timer = null;
+    }
+
+    private void StartGame()
+    {
+        _timer = Timer();
+        StartCoroutine(_timer);
+    }
+
+    private void RestartGame()
+    {
+        ResetStats();
+        StartGame();
+    }
     public static void AddSkip()
     {
+        if (IsGameOver)
+            return;
+
         SkipCount++;
         SkipLeft--;
 
-        if (SkipCount > maxAllowedSkipCount)
+        if (SkipCount > MaxAllowedSkipCount)
         {
             SkipCount = 0;
-            SkipLeft = maxAllowedSkipCount;
+            SkipLeft = MaxAllowedSkipCount;
 
             EventManager.ExceededSkip?.Invoke();
         }
@@ -49,12 +75,46 @@ public static class GameManager
 
     private static void ResetStats()
     {
-        Score = 0;
+        DestroyedOnWave = 0;
+        LeftTime = 60;
+        IsGameOver = false;
         SkipCount = 0;
-        maxAllowedSkipCount = 2;
-
-        SkipLeft = maxAllowedSkipCount;
+        MaxAllowedSkipCount = 2;
+        SkipLeft = MaxAllowedSkipCount;
 
         EventManager.UpdatedSkip?.Invoke();
+    }
+
+    public static void ResetDestroyedCount()
+    {
+        DestroyedOnWave = 0;
+    }
+
+    private static IEnumerator Timer()
+    {
+        while (true)
+        {
+            EventManager.UpdatedTime?.Invoke();
+
+            yield return new WaitForSeconds(1f);
+
+            LeftTime--;
+
+            if (LeftTime < 0)
+            {
+                IsGameOver = true;
+
+                EventManager.GameOver?.Invoke();
+
+                yield break;
+            }
+        }
+    }
+
+    private void AddTime()
+    {
+        LeftTime += DestroyedOnWave / 2f;
+
+        EventManager.UpdatedTime?.Invoke();
     }
 }
