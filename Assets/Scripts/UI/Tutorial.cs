@@ -20,27 +20,33 @@ public class Tutorial : MonoBehaviour
 
     private IEnumerator StartTouchTutorial()
     {
-        //float delay = 0.5f;
-        float delay = 0.001f;
+        float delay = 0.5f;
+        //float delay = 0.001f;
 
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
+            yield return new WaitForSeconds(delay);
+            EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
+            yield return new WaitForSeconds(delay);
+            EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
+            yield return new WaitForSeconds(delay);
+            EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
 
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
-        yield return new WaitForSeconds(delay);
-        EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
+            yield return new WaitForSeconds(delay);
+            EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
+            yield return new WaitForSeconds(delay);
+            EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
+            yield return new WaitForSeconds(delay);
+            EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
+            yield return new WaitForSeconds(delay);
+            EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
+        }
+    }
 
+    public void OnOK()
+    {
         GameManager.IsTutorialDone = true;
 
         EventManager.EndedTutorial?.Invoke();

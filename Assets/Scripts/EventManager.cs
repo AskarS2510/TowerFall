@@ -25,6 +25,7 @@ public static class EventManager
     public static UnityEvent UnpausedGame;
     public static UnityEvent EndedTutorial;
     public static UnityEvent DoneDestruction;
+    public static UnityEvent PreparedMap;
     public static UnityEvent<string, float> RaisedSlider;
 
     static EventManager()
@@ -52,6 +53,7 @@ public static class EventManager
         UnpausedGame = new UnityEvent();
         EndedTutorial = new UnityEvent();
         DoneDestruction = new UnityEvent();
+        PreparedMap = new UnityEvent();
         RaisedSlider = new UnityEvent<string, float>();
     }
 }

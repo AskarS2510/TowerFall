@@ -21,9 +21,10 @@ public class GameManager : MonoBehaviour
 
         ResetStats();
 
-        EventManager.StartedGame.AddListener(StartGame);
+        EventManager.EndedTutorial.AddListener(StartGame);
 
         EventManager.RestartedGame.AddListener(RestartGame);
+        EventManager.PreparedMap.AddListener(StartGame);
 
         EventManager.GameOver.AddListener(GameOver);
 
@@ -52,7 +53,6 @@ public class GameManager : MonoBehaviour
     private void RestartGame()
     {
         ResetStats();
-        StartGame();
     }
     public static void AddSkip()
     {
@@ -76,13 +76,14 @@ public class GameManager : MonoBehaviour
     private static void ResetStats()
     {
         DestroyedOnWave = 0;
-        LeftTime = 60;
+        LeftTime = 90;
         IsGameOver = false;
         SkipCount = 0;
         MaxAllowedSkipCount = 2;
         SkipLeft = MaxAllowedSkipCount;
 
         EventManager.UpdatedSkip?.Invoke();
+        EventManager.UpdatedTime?.Invoke();
     }
 
     public static void ResetDestroyedCount()

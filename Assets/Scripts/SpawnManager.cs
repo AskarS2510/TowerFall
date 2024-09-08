@@ -16,7 +16,9 @@ public class SpawnManager : MonoBehaviour
 
         EventManager.StartedGame.AddListener(SpawnPlayerBlock);
 
-        EventManager.RestartedGame.AddListener(PrepareAndSpawn);
+        EventManager.PreparedMap.AddListener(SpawnPlayerBlock);
+
+        //EventManager.RestartedGame.AddListener(PrepareAndSpawn);
 
         EventManager.ReadyForNextBlock.AddListener(SpawnPlayerBlock);
         EventManager.Stuck.AddListener(SpawnStuckBlock);
@@ -97,7 +99,7 @@ public class SpawnManager : MonoBehaviour
 
     private void PrepareAndSpawn()
     {
-        _mapManager.PrepareMap();
+        //_mapManager.PrepareMap();
 
         SpawnPlayerBlock();
     }

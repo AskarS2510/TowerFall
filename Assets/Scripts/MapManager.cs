@@ -1,6 +1,9 @@
+using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class MapManager : MonoBehaviour
 {
@@ -20,17 +23,20 @@ public class MapManager : MonoBehaviour
     private float _positionOffset = 1.2f;
     [SerializeField] private int _mapCenterMaxIdxY;
     [SerializeField] private List<GameObject> _prefabCubes;
+    [SerializeField] private AudioSource _animationAudio;
 
     private void Awake()
     {
-        PrepareMap();
+        PrepareMap(false);
     }
 
-    public void PrepareMap()
+    public void PrepareMap(bool doEvent)
     {
         CreateCubeMap();
 
         MatchIDs();
+
+        StartCoroutine(Animate(doEvent));
     }
 
     private void Start()
@@ -38,14 +44,16 @@ public class MapManager : MonoBehaviour
         EventManager.Destroyed.AddListener(DestroyWithID);
         EventManager.AllowedDestroyFlying.AddListener(DestroyFlyingCubes);
         EventManager.ExceededSkip.AddListener(AddBottomLayer);
+
+        EventManager.RestartedGame.AddListener(() => PrepareMap(true));
     }
 
     private void CreateCubeMap()
     {
         ClearMap();
 
-        for (int i = -_mapCenterMaxIdxX; i <= _mapCenterMaxIdxX; i++)
-            for (int j = _mapCenterStartIdxY; j <= _mapCenterMaxIdxY; j++)
+        for (int j = _mapCenterStartIdxY; j <= _mapCenterMaxIdxY; j++)
+            for (int i = -_mapCenterMaxIdxX; i <= _mapCenterMaxIdxX; i++)
                 for (int k = -_mapCenterMaxIdxZ; k <= _mapCenterMaxIdxZ; k++)
                 {
                     Vector3Int cubePosition = new Vector3Int(i, j, k);
@@ -263,5 +271,32 @@ public class MapManager : MonoBehaviour
             if (!s_leftColorCubes.ContainsKey(color))
                 s_leftColorCubes.Add(color, true);
         }
+    }
+
+    private IEnumerator Animate(bool doEvent)
+    {
+        float flyTime = 0.5f;
+        float waitTime = 0.05f;
+
+        foreach (var item in CubeMap)
+        {
+            Vector3 pos = (Vector3)item.Key * _positionOffset;
+
+            item.Value.gameObject.transform.position = pos + Vector3.up * 50;
+        }
+
+        foreach (var item in CubeMap)
+        {
+            Vector3 pos = (Vector3)item.Key * _positionOffset;
+
+            item.Value.gameObject.transform.DOMoveY(pos.y, flyTime).SetEase(Ease.OutExpo);
+
+            _animationAudio.Play();
+
+            yield return new WaitForSeconds(waitTime);
+        }
+
+        if (doEvent)
+            EventManager.PreparedMap?.Invoke();
     }
 }

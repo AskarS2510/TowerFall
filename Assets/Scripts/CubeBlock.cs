@@ -17,12 +17,15 @@ public class CubeBlock : MonoBehaviour
     private float _defaultMoveDownTime = 0.5f;
     private float _moveDownTime;
     private bool _isSpeeded;
+    private bool _isMoving;
     private float _positionOffset = 1.2f;
     [SerializeField] private MapManager _mapManager;
+    [SerializeField] private AudioSource _animationAudio;
 
     private void OnEnable()
     {
         _isSpeeded = false;
+        _isMoving = false;
         _moveDownTime = _defaultMoveDownTime;
 
         GiveControls();
@@ -39,8 +42,8 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator MoveDown()
     {
-
         FinalPosition = GetFinalPosition();
+        _isMoving = true;
 
         while (true)
         {
@@ -48,12 +51,16 @@ public class CubeBlock : MonoBehaviour
 
             if (PositionInt == FinalPosition)
             {
+                _isMoving = false;
+
                 DestroyOrStick();
 
                 yield break;
             }
             else
+            {
                 ChangePosition(PositionInt + Vector3Int.down);
+            }
         }
     }
 
@@ -291,6 +298,9 @@ public class CubeBlock : MonoBehaviour
     {
         PositionInt = position;
         transform.position = (Vector3)position * _positionOffset;
+
+        if (_isMoving)
+            _animationAudio.Play();
     }
 
     public void RotateFromCount(int leftCount, int rightCount)
