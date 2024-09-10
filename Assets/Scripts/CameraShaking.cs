@@ -9,28 +9,31 @@ public class CameraShaking : MonoBehaviour
 
     void Start()
     {
-        _shakeDuration = GameManager.DelayBetweenWaves;
+        _shakeStrength = 0;
+
+        _shakeDuration = GameManager.Instance.DelayBetweenWaves;
 
         EventManager.DoneDestruction.AddListener(ShakeCamera);
+        EventManager.Stuck.AddListener(ShakeNoWait);
     }
 
     private void ShakeCamera()
     {
+        if (GameManager.Instance.DestroyedOnWave == 0)
+            return;
+
         SetShakeStrength();
 
         transform.DOShakePosition(_shakeDuration, _shakeStrength);
     }
+    private void ShakeNoWait()
+    {
+        transform.DOShakePosition(_shakeDuration, Vector3.up * 0.5f);
+    }
 
     private void SetShakeStrength()
     {
-        int destroyedCount = GameManager.DestroyedOnWave;
-
-        if (destroyedCount == 0)
-        {
-            _shakeStrength = 0.0f;
-
-            return;
-        }
+        int destroyedCount = GameManager.Instance.DestroyedOnWave;
 
         if (destroyedCount <= _superShakeCount)
         {

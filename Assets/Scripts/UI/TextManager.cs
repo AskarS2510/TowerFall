@@ -23,7 +23,7 @@ public class TextManager : MonoBehaviour
         if (gameObject.name != "Skip Text")
             return;
 
-        textMesh.text = GameManager.SkipLeft.ToString();
+        textMesh.text = GameManager.Instance.SkipLeft.ToString();
     }
 
     private void UpdateLeftTime()
@@ -31,7 +31,7 @@ public class TextManager : MonoBehaviour
         if (gameObject.name != "Left Time Text")
             return;
 
-        float time = GameManager.LeftTime;
+        float time = GameManager.Instance.LeftTime;
 
         TimeSpan result = TimeSpan.FromSeconds(time);
         string fromTimeString = result.ToString("m':'ss");

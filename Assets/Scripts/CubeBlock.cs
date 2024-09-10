@@ -25,8 +25,8 @@ public class CubeBlock : MonoBehaviour
     private void OnEnable()
     {
         _isSpeeded = false;
-        _isMoving = false;
         _moveDownTime = _defaultMoveDownTime;
+        _isMoving = true;
 
         GiveControls();
     }
@@ -43,7 +43,6 @@ public class CubeBlock : MonoBehaviour
     private IEnumerator MoveDown()
     {
         FinalPosition = GetFinalPosition();
-        _isMoving = true;
 
         while (true)
         {
@@ -109,6 +108,8 @@ public class CubeBlock : MonoBehaviour
         EventManager.StoppedMovement?.Invoke();
         RemoveControls();
 
+        Vector3Int lastPos = PositionInt;
+
         if (DestroyNearbySameColors())
         {
             SpawnDestructionEffect();
@@ -118,10 +119,12 @@ public class CubeBlock : MonoBehaviour
 
             foreach (var item in DefaultBlockScheme)
             {
-                GameManager.UpdateScore();
+                GameManager.Instance.UpdateScore();
             }
 
             EventManager.AllowedDestroyFlying?.Invoke();
+
+            _mapManager.StartAnimation((Vector3)lastPos, MapManager.BlockOutcome.Destruction);
         }
         else
         {
@@ -132,6 +135,8 @@ public class CubeBlock : MonoBehaviour
             ChangePosition(PositionInt + 120 * Vector3Int.down);
 
             EventManager.Stuck?.Invoke();
+
+            _mapManager.StartAnimation((Vector3)lastPos, MapManager.BlockOutcome.Stuck);
         }
 
         StartCoroutine(ReadyWithDelay());
@@ -141,7 +146,7 @@ public class CubeBlock : MonoBehaviour
     {
         EventManager.DoneDestruction?.Invoke();
 
-        yield return new WaitForSeconds(GameManager.DelayBetweenWaves);
+        yield return new WaitForSeconds(GameManager.Instance.DelayBetweenWaves);
 
         gameObject.SetActive(false);
 
@@ -290,7 +295,7 @@ public class CubeBlock : MonoBehaviour
         {
             Vector3Int newPos = PositionInt + pos;
 
-            ParticlesAudioPool.Instance.SpawnParticles(newPos, BlockColor);
+            ParticlesPool.Instance.SpawnParticles(newPos, BlockColor);
         }
     }
 
@@ -381,7 +386,9 @@ public class CubeBlock : MonoBehaviour
     private void DropDown()
     {
         ChangePosition(FinalPosition);
-        RemoveControls();
+        _isMoving = false;
+        StopCoroutine(MoveDown());
+        DestroyOrStick();
     }
 
     public void OnGameOver()

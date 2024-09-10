@@ -1,27 +1,38 @@
-
 using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static bool IsTutorialDone;
-    public static int DestroyedOnWave;
-    public static float DelayBetweenWaves;
-    public static float LeftTime;
-    public static bool IsGameOver;
-    public static int SkipCount;
-    public static int MaxAllowedSkipCount;
-    public static int SkipLeft;
-    public static IEnumerator _timer;
+    public static GameManager Instance;
+    public bool IsTutorialDone;
+    public int DestroyedOnWave;
+    public float DelayBetweenWaves;
+    public float LeftTime;
+    public bool IsGameOver;
+    public int SkipCount;
+    public int MaxAllowedSkipCount;
+    public int SkipLeft;
+    public IEnumerator _timer;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
 
     private void Start()
     {
-        IsTutorialDone = false;
+        //IsTutorialDone = false;
         DelayBetweenWaves = 1.2f;
 
         ResetStats();
 
-        EventManager.EndedTutorial.AddListener(StartGame);
+        if (!IsTutorialDone)
+            EventManager.EndedTutorial.AddListener(StartGame);
+        else
+            EventManager.StartedGame.AddListener(StartGame);
 
         EventManager.RestartedGame.AddListener(RestartGame);
         EventManager.PreparedMap.AddListener(StartGame);
@@ -33,7 +44,7 @@ public class GameManager : MonoBehaviour
         EventManager.DoneDestruction.AddListener(AddTime);
     }
 
-    public static void UpdateScore()
+    public void UpdateScore()
     {
         DestroyedOnWave++;
     }
@@ -54,7 +65,7 @@ public class GameManager : MonoBehaviour
     {
         ResetStats();
     }
-    public static void AddSkip()
+    public void AddSkip()
     {
         if (IsGameOver)
             return;
@@ -73,7 +84,7 @@ public class GameManager : MonoBehaviour
         EventManager.UpdatedSkip?.Invoke();
     }
 
-    private static void ResetStats()
+    private void ResetStats()
     {
         DestroyedOnWave = 0;
         LeftTime = 90;
@@ -86,12 +97,12 @@ public class GameManager : MonoBehaviour
         EventManager.UpdatedTime?.Invoke();
     }
 
-    public static void ResetDestroyedCount()
+    public void ResetDestroyedCount()
     {
         DestroyedOnWave = 0;
     }
 
-    private static IEnumerator Timer()
+    private IEnumerator Timer()
     {
         while (true)
         {

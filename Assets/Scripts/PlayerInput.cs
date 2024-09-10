@@ -31,7 +31,7 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
-        if (!GameManager.IsTutorialDone)
+        if (!GameManager.Instance.IsTutorialDone)
             return;
 
         ProcessKeyboardInput();

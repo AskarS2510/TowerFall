@@ -27,7 +27,7 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnPlayerBlock()
     {
-        if (GameManager.IsGameOver)
+        if (GameManager.Instance.IsGameOver)
             return;
 
         if (_mapManager.CubeMap.Count == 0)
@@ -54,7 +54,7 @@ public class SpawnManager : MonoBehaviour
 
         cubeBlock.RotateFromCount(_leftRotateCount, _rightRotateCount);
 
-        if (GameManager.IsTutorialDone)
+        if (GameManager.Instance.IsTutorialDone)
             cubeBlock.StartMoveDown();
 
         EventManager.SpawnedPlayerBlock?.Invoke();
@@ -72,14 +72,14 @@ public class SpawnManager : MonoBehaviour
         {
             Vector3Int newPos = stuckObjectPos + pos;
 
-            GameObject newCubeObject = Instantiate(blockStructure, (Vector3)newPos * _positionOffset, stuckObjectRotation, transform);
+            GameObject newCubeObject = Instantiate(blockStructure, (Vector3)newPos * _positionOffset, stuckObjectRotation, _mapManager.transform);
 
             Cube newCube = newCubeObject.GetComponent<Cube>();
 
             _mapManager.AddCube(newPos, newCube);
         }
 
-        GameManager.AddSkip();
+        GameManager.Instance.AddSkip();
 
         _mapManager.MatchIDs();
     }

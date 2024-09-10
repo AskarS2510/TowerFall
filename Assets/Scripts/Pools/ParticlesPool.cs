@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParticlesAudioPool : MonoBehaviour
+public class ParticlesPool : MonoBehaviour
 {
     [SerializeField] private GameObject _prefabParticleAudio;
-    public static ParticlesAudioPool Instance;
+    public static ParticlesPool Instance;
 
     private int _amountToPool = 25;
     private List<GameObject> _particlesPool;
@@ -76,7 +76,7 @@ public class ParticlesAudioPool : MonoBehaviour
 
     private IEnumerator ClearParticle(GameObject obj)
     {
-        yield return new WaitForSeconds(GameManager.DelayBetweenWaves);
+        yield return new WaitForSeconds(GameManager.Instance.DelayBetweenWaves);
 
         obj.SetActive(false);
     }

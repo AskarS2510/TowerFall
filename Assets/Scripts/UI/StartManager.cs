@@ -2,15 +2,16 @@ using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
-public class MenuManager : MonoBehaviour
+public class StartManager : MonoBehaviour
 {
-    private int _waitBeforeEnable = 2;
+    private float _waitBeforeEnable = 5f;
+    private float _flyTime = 0.5f;
 
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(_waitBeforeEnable);
 
-        transform.DOLocalMoveY(0f, 1f);
+        transform.DOLocalMoveY(0f, _flyTime);
     }
 
     public void StartGame()

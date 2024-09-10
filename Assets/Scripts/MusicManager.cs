@@ -11,7 +11,7 @@ public class MusicManager : MonoBehaviour
 
         EventManager.RaisedSlider.AddListener(ChangeVolume);
 
-        if (_musicName == "Effects")
+        if (gameObject.name == "Explosion")
             EventManager.DoneDestruction.AddListener(PlayEffects);
     }
 
@@ -25,7 +25,7 @@ public class MusicManager : MonoBehaviour
 
     private void PlayEffects()
     {
-        if (GameManager.DestroyedOnWave > 0)
+        if (GameManager.Instance.DestroyedOnWave > 0)
             _musicSource.Play();
     }
 }
