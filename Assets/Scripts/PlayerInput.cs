@@ -34,9 +34,11 @@ public class PlayerInput : MonoBehaviour
         if (!GameManager.Instance.IsTutorialDone)
             return;
 
-        ProcessKeyboardInput();
+        if (GameManager.Instance.userDeviceType == DeviceType.Desktop)
+            ProcessKeyboardInput();
 
-        ProcessTouchInput();
+        if (GameManager.Instance.userDeviceType == DeviceType.Handheld)
+            ProcessTouchInput();
     }
 
     private void ProcessTouchInput()

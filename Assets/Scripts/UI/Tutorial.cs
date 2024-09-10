@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Tutorial : MonoBehaviour
 {
@@ -18,14 +19,18 @@ public class Tutorial : MonoBehaviour
         if (GameManager.Instance.IsTutorialDone)
             return;
 
-        EventManager.StartedGame.AddListener(() => gameObject.SetActive(true));
         EventManager.EndedTutorial.AddListener(() => gameObject.SetActive(false));
 
+        EventManager.RaisedHowToPlay.AddListener(RestartTutorial);
+
+        EventManager.StartedGame.AddListener(() => gameObject.SetActive(true));
         EventManager.StartedGame.AddListener(() => StartCoroutine(StartTouchTutorial()));
     }
 
     private IEnumerator StartTouchTutorial()
     {
+        _cursorImage.transform.localPosition = Vector3.zero;
+
         float delay = 0.5f;
         //float delay = 0.001f;
         float cursorPath = 40;
@@ -77,37 +82,6 @@ public class Tutorial : MonoBehaviour
             yield return new WaitForSeconds(delay);
             EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
             yield return new WaitForSeconds(delay);
-
-
-            //_cursorImage.transform.DOLocalMoveX(cursorPath, delay);
-            //_cursorImage.transform.DOLocalMoveY(cursorPath, delay);
-            //yield return new WaitForSeconds(delay);
-            //EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
-
-            //_cursorImage.transform.DOLocalMoveX(0, delay);
-            //_cursorImage.transform.DOLocalMoveY(0, delay);
-            //yield return new WaitForSeconds(delay);
-            //EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
-
-            //_cursorImage.transform.DOLocalMoveX(-cursorPath, delay);
-            //_cursorImage.transform.DOLocalMoveY(cursorPath, delay);
-            //yield return new WaitForSeconds(delay);
-            //EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
-
-            //_cursorImage.transform.DOLocalMoveX(cursorPath, delay);
-            //_cursorImage.transform.DOLocalMoveY(-cursorPath, delay);
-            //yield return new WaitForSeconds(delay);
-            //EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
-
-            //_cursorImage.transform.DOLocalMoveX(cursorPath, delay);
-            //_cursorImage.transform.DOLocalMoveY(-cursorPath, delay);
-            //yield return new WaitForSeconds(delay);
-            //EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
-
-            //_cursorImage.transform.DOLocalMoveX(-cursorPath, delay);
-            //_cursorImage.transform.DOLocalMoveY(cursorPath, delay);
-            //yield return new WaitForSeconds(delay);
-            //EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
         }
     }
 
@@ -115,10 +89,21 @@ public class Tutorial : MonoBehaviour
     {
         GameManager.Instance.IsTutorialDone = true;
 
+        StopCoroutine(StartTouchTutorial());
+
         EventManager.EndedTutorial?.Invoke();
 
         CubeBlock cubeBlock = ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>();
 
         cubeBlock.StartMoveDown();
+    }
+
+    public void RestartTutorial()
+    {
+        GameManager.Instance.IsTutorialDone = false;
+
+        Time.timeScale = 1f;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -34,7 +34,12 @@ public class TextManager : MonoBehaviour
         float time = GameManager.Instance.LeftTime;
 
         TimeSpan result = TimeSpan.FromSeconds(time);
-        string fromTimeString = result.ToString("m':'ss");
+
+        string fromTimeString;
+        if (time > 60)
+            fromTimeString = result.ToString("m':'ss");
+        else
+            fromTimeString = result.ToString("ss");
 
         textMesh.text = fromTimeString;
     }

@@ -11,7 +11,7 @@ public class StartManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_waitBeforeEnable);
 
-        transform.DOLocalMoveY(0f, _flyTime);
+        transform.DOLocalMoveY(70f, _flyTime);
     }
 
     public void StartGame()

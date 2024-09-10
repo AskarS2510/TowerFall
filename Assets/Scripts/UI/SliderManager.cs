@@ -18,6 +18,9 @@ public class SliderManager : MonoBehaviour
 
         if (_resetButton != null)
             _resetButton.onClick.AddListener(ResetValue);
+
+        if (GameManager.Instance.userDeviceType == DeviceType.Desktop && name == "Slider Sensitivity")
+            gameObject.SetActive(false);
     }
 
     public void ChangeValue(float volume)

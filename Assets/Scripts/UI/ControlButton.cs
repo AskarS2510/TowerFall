@@ -10,12 +10,12 @@ public class ControlButton : MonoBehaviour
 
     private void Start()
     {
-        //if (SystemInfo.deviceType == DeviceType.Desktop)
-        //{
-        //    gameObject.SetActive(false);
+        if (GameManager.Instance.userDeviceType == DeviceType.Desktop)
+        {
+            gameObject.SetActive(false);
 
-        //    return;
-        //}
+            return;
+        }
 
         _button = GetComponent<Button>();
 

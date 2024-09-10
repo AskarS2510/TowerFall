@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public int MaxAllowedSkipCount;
     public int SkipLeft;
     public IEnumerator _timer;
+    public DeviceType userDeviceType;
 
     private void Awake()
     {
@@ -20,6 +21,10 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
+
+        userDeviceType = SystemInfo.deviceType;
+        //userDeviceType = DeviceType.Desktop;
+        userDeviceType = DeviceType.Handheld;
     }
 
     private void Start()
