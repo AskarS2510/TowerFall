@@ -31,9 +31,6 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.IsTutorialDone)
-            return;
-
         if (GameManager.Instance.userDeviceType == DeviceType.Desktop)
             ProcessKeyboardInput();
 

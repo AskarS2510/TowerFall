@@ -5,10 +5,24 @@ public class GameplayManager : MonoBehaviour
     private void Start()
     {
         if (GameManager.Instance.IsTutorialDone)
+        {
+            ChangeActiveAll(true);
+
             return;
+        }
 
-        gameObject.SetActive(false);
+        ChangeActiveAll(false);
 
-        EventManager.EndedTutorial.AddListener(() => gameObject.SetActive(true));
+        EventManager.EndedTutorial.AddListener(() => ChangeActiveAll(true));
+    }
+
+    private void ChangeActiveAll(bool active)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var child = transform.GetChild(i).gameObject;
+
+            child.SetActive(active);
+        }
     }
 }

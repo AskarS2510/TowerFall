@@ -22,9 +22,7 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
 
-        userDeviceType = SystemInfo.deviceType;
-        //userDeviceType = DeviceType.Desktop;
-        userDeviceType = DeviceType.Handheld;
+        //userDeviceType = SystemInfo.deviceType;
     }
 
     private void Start()

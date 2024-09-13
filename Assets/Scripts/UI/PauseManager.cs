@@ -25,8 +25,8 @@ public class PauseManager : MonoBehaviour
         EventManager.PausedGame?.Invoke();
     }
 
-    public void RaiseHowToPlay()
+    public void AskHowToPlay()
     {
-        EventManager.RaisedHowToPlay?.Invoke();
+        EventManager.AskedHowToPlay?.Invoke();
     }
 }

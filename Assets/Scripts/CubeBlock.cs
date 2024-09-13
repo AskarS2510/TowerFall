@@ -42,8 +42,6 @@ public class CubeBlock : MonoBehaviour
 
     private IEnumerator MoveDown()
     {
-        FinalPosition = GetFinalPosition();
-
         while (true)
         {
             yield return new WaitForSeconds(_moveDownTime);
@@ -259,8 +257,6 @@ public class CubeBlock : MonoBehaviour
         // Если все свободно, то перемещаем
         ChangePosition(PositionInt + shift);
 
-        FinalPosition = GetFinalPosition();
-
         EventManager.ChangedPosition?.Invoke(PositionInt.x, PositionInt.z);
     }
 
@@ -303,6 +299,8 @@ public class CubeBlock : MonoBehaviour
     {
         PositionInt = position;
         transform.position = (Vector3)position * _positionOffset;
+
+        FinalPosition = GetFinalPosition();
 
         if (_isMoving)
             _animationAudio.Play();
