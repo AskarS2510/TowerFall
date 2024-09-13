@@ -5,7 +5,7 @@ public class SliderManager : MonoBehaviour
 {
     private float _startValue;
     private Slider _slider;
-    [SerializeField] private string sourceName;
+    [SerializeField] private string _sourceName;
     [SerializeField] private Button _resetButton;
 
     private void Start()
@@ -21,11 +21,15 @@ public class SliderManager : MonoBehaviour
 
         if (GameManager.Instance.userDeviceType == DeviceType.Desktop && name == "Slider Sensitivity")
             gameObject.SetActive(false);
+
+        LoadSettings();
     }
 
     public void ChangeValue(float volume)
     {
-        EventManager.RaisedSlider?.Invoke(sourceName, volume);
+        EventManager.RaisedSlider?.Invoke(_sourceName, volume);
+
+        SaveSettings();
     }
 
     public void ResetValue()
@@ -33,5 +37,20 @@ public class SliderManager : MonoBehaviour
         _slider.value = _startValue;
 
         ChangeValue(_startValue);
+    }
+
+    private void LoadSettings()
+    {
+        if (name == "Slider Sensitivity")
+            _slider.value = PlayerPrefs.GetFloat(_sourceName, GameManager.Instance.DefaultSense);
+        else
+            _slider.value = PlayerPrefs.GetFloat(_sourceName, GameManager.Instance.DefaultAudioValue);
+
+        ChangeValue(_slider.value);
+    }
+
+    private void SaveSettings()
+    {
+        PlayerPrefs.SetFloat(_sourceName, _slider.value);
     }
 }

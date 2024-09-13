@@ -62,11 +62,6 @@ public class ControlButton : MonoBehaviour
         }
     }
 
-    public void ClickedSpeedDown()
-    {
-        EventManager.RaisedSwitchSpeed?.Invoke();
-    }
-
     public void ClickedDropDown()
     {
         EventManager.RaisedDropDown?.Invoke();

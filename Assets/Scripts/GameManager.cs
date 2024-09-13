@@ -12,11 +12,20 @@ public class GameManager : MonoBehaviour
     public int SkipCount;
     public int MaxAllowedSkipCount;
     public int SkipLeft;
+    public float DefaultAudioValue = 0.1f;
+    public float DefaultSense = 0.5f;
     public IEnumerator _timer;
     public DeviceType userDeviceType;
 
     private void Awake()
     {
+        //PlayerPrefs.DeleteAll();
+
+        if (PlayerPrefs.GetInt("IsTutorialDone", 0) == 0)
+            IsTutorialDone = false;
+        else
+            IsTutorialDone = true;
+
         if (Instance == null)
         {
             Instance = this;
@@ -54,7 +63,8 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        StopCoroutine(_timer);
+        if (_timer != null)
+            StopCoroutine(_timer);
         _timer = null;
     }
 

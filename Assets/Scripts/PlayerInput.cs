@@ -17,8 +17,6 @@ public class PlayerInput : MonoBehaviour
 
     private void Start()
     {
-        SetSensetivity(0.5f);
-
         //Application.targetFrameRate = 30;
 
         EventManager.DoneRotation.AddListener(RotateControls);
@@ -122,14 +120,8 @@ public class PlayerInput : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
             EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-            EventManager.RaisedSwitchSpeed?.Invoke();
-
         if (Input.GetKeyDown(KeyCode.Space))
             EventManager.RaisedDropDown?.Invoke();
-
-        //if (Input.GetKeyUp(KeyCode.DownArrow))
-        //    EventManager.TurnedOffSpeed?.Invoke();
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -182,6 +174,13 @@ public class PlayerInput : MonoBehaviour
             return;
 
         SetSensetivity(sensitivity);
+    }
+
+    private void LoadSettings()
+    {
+        float sense = PlayerPrefs.GetFloat("Sensitivity", GameManager.Instance.DefaultSense);
+
+        SetSensetivity(sense);
     }
 
     private void SetSensetivity(float sensitivity)

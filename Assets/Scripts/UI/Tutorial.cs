@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Tutorial : MonoBehaviour
 {
@@ -17,10 +18,16 @@ public class Tutorial : MonoBehaviour
     [SerializeField] private GameObject _buttonLeft;
     [SerializeField] private GameObject _buttonRight;
     [SerializeField] private GameObject _buttonDrop;
+    private GameObject _activeTutorialKeys;
+    [SerializeField] private GameObject _wasdParent;
+    [SerializeField] private GameObject _arrowsParent;
+    [SerializeField] private GameObject _spaceParent;
 
-    void Start()
+    private void Start()
     {
         gameObject.SetActive(false);
+
+        EventManager.RaisedHowToPlay.AddListener(RestartTutorial);
 
         if (GameManager.Instance.IsTutorialDone)
             return;
@@ -28,27 +35,58 @@ public class Tutorial : MonoBehaviour
         _buttonLeft.SetActive(false);
         _buttonRight.SetActive(false);
         _buttonDrop.SetActive(false);
+        _wasdParent.SetActive(false);
+        _arrowsParent.SetActive(false);
+        _spaceParent.SetActive(false);
 
         EventManager.EndedTutorial.AddListener(() => gameObject.SetActive(false));
 
-        EventManager.RaisedHowToPlay.AddListener(RestartTutorial);
+        if (GameManager.Instance.userDeviceType == DeviceType.Handheld)
+        {
+            tutorials = new List<IEnumerator>() { MoveTutorial(), LeftRightButtonsTutorial(), DropDownTutorial() };
+        }
+        else
+        {
+            _cursorImage.SetActive(false);
+            tutorials = new List<IEnumerator>() { MoveTutorialDesktop(), LeftRightTutorialDesktop(), DropDownTutorialDesktop() };
+        }
 
-        tutorials = new List<IEnumerator>() { MoveTutorial(), LeftRightButtonsTutorial(), DropDownTutorial() };
         tutorialIdx = 0;
 
         EventManager.StartedGame.AddListener(() => gameObject.SetActive(true));
         EventManager.StartedGame.AddListener(() => StartCoroutine(tutorials[tutorialIdx]));
     }
+
+    private IEnumerator DyeKey(string name, float time)
+    {
+        List<GameObject> objectsToCheck = new List<GameObject>() { _wasdParent, _arrowsParent, _spaceParent };
+
+        foreach (GameObject obj in objectsToCheck)
+            foreach (Transform item in obj.transform)
+            {
+                if (item.name == name)
+                {
+                    Image image = item.GetComponent<Image>();
+
+                    image.color = Color.red;
+
+                    yield return new WaitForSeconds(time);
+
+                    image.color = Color.white;
+
+                    yield break;
+                }
+            }
+    }
+
     private IEnumerator DropDownTutorial()
     {
-        if (GameManager.Instance.userDeviceType != DeviceType.Desktop)
-            _buttonDrop.SetActive(true);
+        _buttonDrop.SetActive(true);
 
         float xRight = 190f;
         float y = -165f;
         float delay = 0.5f;
         float afterDropDelay = 4f;
-
 
         while (true)
         {
@@ -72,11 +110,8 @@ public class Tutorial : MonoBehaviour
     private IEnumerator LeftRightButtonsTutorial()
     {
         _cursorImage.transform.localPosition = Vector3.zero;
-        if (GameManager.Instance.userDeviceType != DeviceType.Desktop)
-        {
-            _buttonLeft.SetActive(true);
-            _buttonRight.SetActive(true);
-        }
+        _buttonLeft.SetActive(true);
+        _buttonRight.SetActive(true);
 
         float xRight = 190f;
         float xLeft = -175f;
@@ -101,6 +136,69 @@ public class Tutorial : MonoBehaviour
             yield return new WaitForSeconds(delay);
             EventManager.RaisedRotate?.Invoke(true, false);
             _cursorImage.transform.DOScale(1f, delay);
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+    private IEnumerator LeftRightTutorialDesktop()
+    {
+        _activeTutorialKeys = _arrowsParent;
+        _activeTutorialKeys.SetActive(true);
+
+        float delay = 0.5f;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            StartCoroutine(DyeKey("right", delay));
+            EventManager.RaisedRotate?.Invoke(false, true);
+            yield return new WaitForSeconds(2 * delay);
+            StartCoroutine(DyeKey("left", delay));
+            EventManager.RaisedRotate?.Invoke(true, false);
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+    private IEnumerator DropDownTutorialDesktop()
+    {
+        _activeTutorialKeys = _spaceParent;
+        _activeTutorialKeys.SetActive(true);
+
+        float delay = 0.5f;
+        float afterDropDelay = 3f;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            StartCoroutine(DyeKey("space", delay));
+            EventManager.RaisedDropDown?.Invoke();
+            yield return new WaitForSeconds(afterDropDelay);
+        }
+    }
+
+    private IEnumerator MoveTutorialDesktop()
+    {
+        _activeTutorialKeys = _wasdParent;
+        _activeTutorialKeys.SetActive(true);
+
+        float delay = 0.5f;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(delay);
+            StartCoroutine(DyeKey("w", delay));
+            EventManager.RaisedMove?.Invoke(_upArrowX, _upArrowZ);
+            yield return new WaitForSeconds(2 * delay);
+            StartCoroutine(DyeKey("s", delay));
+            EventManager.RaisedMove?.Invoke(-_upArrowX, -_upArrowZ);
+            yield return new WaitForSeconds(delay);
+
+            yield return new WaitForSeconds(delay);
+            StartCoroutine(DyeKey("a", delay));
+            EventManager.RaisedMove?.Invoke(_leftArrowX, _leftArrowZ);
+            yield return new WaitForSeconds(2 * delay);
+            StartCoroutine(DyeKey("d", delay));
+            EventManager.RaisedMove?.Invoke(-_leftArrowX, -_leftArrowZ);
             yield return new WaitForSeconds(delay);
         }
     }
@@ -165,6 +263,8 @@ public class Tutorial : MonoBehaviour
 
     public void OnOK()
     {
+        if (_activeTutorialKeys != null)
+            _activeTutorialKeys.SetActive(false);
         StopCoroutine(tutorials[tutorialIdx]);
 
         tutorialIdx++;
@@ -175,6 +275,9 @@ public class Tutorial : MonoBehaviour
 
             return;
         }
+
+        PlayerPrefs.SetInt("IsTutorialDone", 1);
+        PlayerPrefs.Save();
 
         GameManager.Instance.IsTutorialDone = true;        
 
@@ -187,7 +290,12 @@ public class Tutorial : MonoBehaviour
 
     public void RestartTutorial()
     {
+        PlayerPrefs.SetInt("IsTutorialDone", 0);
+        PlayerPrefs.Save();
+
         GameManager.Instance.IsTutorialDone = false;
+
+        DOTween.KillAll();
 
         Time.timeScale = 1f;
 
