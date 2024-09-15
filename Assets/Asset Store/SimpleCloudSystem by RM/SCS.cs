@@ -7,11 +7,14 @@ public class SCS : MonoBehaviour
     public float CloudsSpeed;
 
 
-
+    private void Start()
+    {
+        transform.Rotate(Vector3.up, CloudsSpeed * Time.unscaledTime);
+    }
 
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (!Player)
             return;
@@ -20,7 +23,7 @@ public class SCS : MonoBehaviour
 
         gameObject.transform.position = Player.transform.position;
 
-        transform.Rotate(0, Time.deltaTime * CloudsSpeed, 0);
+        transform.Rotate(0, Time.unscaledDeltaTime * CloudsSpeed, 0);
     }
 
 

@@ -13,10 +13,8 @@ public class CubeBlock : MonoBehaviour
     public Vector3Int FinalPosition;
     public Color BlockColor;
 
-    private float _speededMoveDownTime = 0.1f;
     private float _defaultMoveDownTime = 0.5f;
     private float _moveDownTime;
-    private bool _isSpeeded;
     private bool _isMoving;
     private float _positionOffset = 1.2f;
     [SerializeField] private MapManager _mapManager;
@@ -24,9 +22,7 @@ public class CubeBlock : MonoBehaviour
 
     private void OnEnable()
     {
-        _isSpeeded = false;
         _moveDownTime = _defaultMoveDownTime;
-        _isMoving = true;
 
         GiveControls();
     }
@@ -83,22 +79,21 @@ public class CubeBlock : MonoBehaviour
         return !IsDownAvailable(position) || IsStuckHorizontal(position);
     }
 
+    public void TurnOnMovingSounds()
+    {
+        _isMoving = true;
+    }
+
     private void GiveControls()
     {
         EventManager.RaisedMove.AddListener(MoveHorizontal);
-        EventManager.RaisedSwitchSpeed.AddListener(SwitchMoveDownSpeed);
         EventManager.RaisedDropDown.AddListener(DropDown);
-
-        EventManager.GameOver.AddListener(OnGameOver);
     }
 
     private void RemoveControls()
     {
         EventManager.RaisedMove.RemoveListener(MoveHorizontal);
-        EventManager.RaisedSwitchSpeed.RemoveListener(SwitchMoveDownSpeed);
         EventManager.RaisedDropDown.RemoveListener(DropDown);
-
-        EventManager.GameOver.RemoveListener(OnGameOver);
     }
 
     private void DestroyOrStick()
@@ -134,19 +129,19 @@ public class CubeBlock : MonoBehaviour
 
             EventManager.Stuck?.Invoke();
 
+            GameManager.Instance.AddSkip();
+
             _mapManager.StartAnimation((Vector3)lastPos, MapManager.BlockOutcome.Stuck);
         }
 
-        StartCoroutine(ReadyWithDelay());
+        EventManager.DoneDestruction?.Invoke();
     }
 
-    private IEnumerator ReadyWithDelay()
+    public void ReadyAfterAnimation()
     {
-        EventManager.DoneDestruction?.Invoke();
-
-        yield return new WaitForSeconds(GameManager.Instance.DelayBetweenWaves);
-
         gameObject.SetActive(false);
+
+        Debug.Log("ReadyForNextBlock + time = " + Time.time + "object = " + name);
 
         EventManager.ReadyForNextBlock?.Invoke();
     }
@@ -262,22 +257,22 @@ public class CubeBlock : MonoBehaviour
 
     private bool IsOnMap(Vector3Int newCubePos)
     {
-        if (newCubePos.x > _mapManager.CenterMaxIdxX)
+        if (newCubePos.x > _mapManager.CenterMoveMaxIdxX)
         {
             return false;
         }
 
-        if (newCubePos.x < -_mapManager.CenterMaxIdxX)
+        if (newCubePos.x < -_mapManager.CenterMoveMaxIdxX)
         {
             return false;
         }
 
-        if (newCubePos.z > _mapManager.CenterMaxIdxZ)
+        if (newCubePos.z > _mapManager.CenterMoveMaxIdxZ)
         {
             return false;
         }
 
-        if (newCubePos.z < -_mapManager.CenterMaxIdxZ)
+        if (newCubePos.z < -_mapManager.CenterMoveMaxIdxZ)
         {
             return false;
         }
@@ -362,48 +357,11 @@ public class CubeBlock : MonoBehaviour
         }
     }
 
-    private void SwitchMoveDownSpeed()
-    {
-        if (_isSpeeded)
-        {
-            _isSpeeded = false;
-            _moveDownTime = _defaultMoveDownTime;
-        }
-        else
-        {
-            _isSpeeded = true;
-            _moveDownTime = _speededMoveDownTime;
-        }
-    }
-
-    private void SlowMoveDown()
-    {
-        _moveDownTime = _defaultMoveDownTime;
-    }
-
     private void DropDown()
     {
         ChangePosition(FinalPosition);
         _isMoving = false;
         StopCoroutine(MoveDown());
         DestroyOrStick();
-    }
-
-    public void OnGameOver()
-    {
-        StopCoroutine(MoveDown());
-
-        EventManager.StoppedMovement?.Invoke();
-        RemoveControls();
-
-        StuckPosition = PositionInt;
-        StuckRotation = transform.rotation;
-
-        // Убираем объект из видимости
-        ChangePosition(PositionInt + 120 * Vector3Int.down);
-
-        EventManager.Stuck?.Invoke();
-
-        gameObject.SetActive(false);
     }
 }

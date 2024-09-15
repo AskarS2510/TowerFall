@@ -4,16 +4,18 @@ public class GameplayManager : MonoBehaviour
 {
     private void Start()
     {
-        if (GameManager.Instance.IsTutorialDone)
-        {
-            ChangeActiveAll(true);
-
-            return;
-        }
-
         ChangeActiveAll(false);
 
-        EventManager.EndedTutorial.AddListener(() => ChangeActiveAll(true));
+        EventManager.GameOver.AddListener(() => ChangeActiveAll(false));
+
+        if (GameManager.Instance.IsTutorialDone)
+        {
+            EventManager.StartedGame.AddListener(() => ChangeActiveAll(true));
+        }
+        else
+        {
+            EventManager.EndedTutorial.AddListener(() => ChangeActiveAll(true));
+        }
     }
 
     private void ChangeActiveAll(bool active)

@@ -1,20 +1,24 @@
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
-    public bool IsTutorialDone;
-    public int DestroyedOnWave;
-    public float DelayBetweenWaves;
-    public float LeftTime;
-    public bool IsGameOver;
-    public int SkipCount;
-    public int MaxAllowedSkipCount;
-    public int SkipLeft;
-    public float DefaultAudioValue = 0.1f;
-    public float DefaultSense = 0.5f;
-    public IEnumerator _timer;
+    [HideInInspector] public static GameManager Instance;
+    [HideInInspector] public bool IsTutorialDone;
+    [HideInInspector] public int DestroyedOnWave;
+    [HideInInspector] public float EffectsDuration;
+    [HideInInspector] public float LeftTime;
+    [HideInInspector] public float PassedTime;
+    [HideInInspector] public bool IsGameOver;
+    [HideInInspector] public int SkipCount;
+    [HideInInspector] public int MaxAllowedSkipCount;
+    [HideInInspector] public int SkipLeft;
+    [HideInInspector] public float DefaultAudioValue = 0.1f;
+    [HideInInspector] public float DefaultSense = 0.5f;
+    [HideInInspector] public IEnumerator _timer;
+    [HideInInspector] public bool IsTopExplosion;
     public DeviceType userDeviceType;
 
     private void Awake()
@@ -37,7 +41,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         //IsTutorialDone = false;
-        DelayBetweenWaves = 1.2f;
+        EffectsDuration = 1.2f;
 
         ResetStats();
 
@@ -63,6 +67,8 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        Time.timeScale = 0f;
+
         if (_timer != null)
             StopCoroutine(_timer);
         _timer = null;
@@ -76,8 +82,15 @@ public class GameManager : MonoBehaviour
 
     private void RestartGame()
     {
-        ResetStats();
+        PlayerPrefs.Save();
+
+        DOTween.KillAll();
+
+        Time.timeScale = 1f;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
     public void AddSkip()
     {
         if (IsGameOver)
@@ -90,8 +103,6 @@ public class GameManager : MonoBehaviour
         {
             SkipCount = 0;
             SkipLeft = MaxAllowedSkipCount;
-
-            EventManager.ExceededSkip?.Invoke();
         }
 
         EventManager.UpdatedSkip?.Invoke();
@@ -99,6 +110,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetStats()
     {
+        PassedTime = 0f;
         DestroyedOnWave = 0;
         LeftTime = 90;
         IsGameOver = false;
@@ -123,6 +135,7 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
 
+            PassedTime++;
             LeftTime--;
 
             if (LeftTime < 0)
@@ -130,6 +143,7 @@ public class GameManager : MonoBehaviour
                 IsGameOver = true;
 
                 EventManager.GameOver?.Invoke();
+                EventManager.GameIsWon?.Invoke(false);
 
                 yield break;
             }

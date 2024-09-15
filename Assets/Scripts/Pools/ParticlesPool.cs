@@ -76,7 +76,7 @@ public class ParticlesPool : MonoBehaviour
 
     private IEnumerator ClearParticle(GameObject obj)
     {
-        yield return new WaitForSeconds(GameManager.Instance.DelayBetweenWaves);
+        yield return new WaitForSeconds(GameManager.Instance.EffectsDuration);
 
         obj.SetActive(false);
     }

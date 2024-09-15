@@ -3,14 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
+using static UnityEditor.Progress;
 
 public class MapManager : MonoBehaviour
 {
     public static Dictionary<Color, bool> s_leftColorCubes = new Dictionary<Color, bool>();
     public int lastUsedID = -1;
-    public int CenterMaxIdxX;
-    public int CenterMaxIdxZ;
+    public int CenterMoveMaxIdxX;
+    public int CenterMoveMaxIdxZ;
     public Dictionary<Vector3Int, Cube> CubeMap = new Dictionary<Vector3Int, Cube>();
+    public enum BlockOutcome
+    {
+        Destruction,
+        Stuck
+    }
 
     private Dictionary<Vector3Int, bool> _visited = new Dictionary<Vector3Int, bool>();
     private int _mapCenterMaxIdxX = 1;
@@ -20,10 +28,10 @@ public class MapManager : MonoBehaviour
             Vector3Int.up, Vector3Int.down,
             Vector3Int.forward, Vector3Int.back };
     private float _positionOffset = 1.2f;
+    private IEnumerator _animatingCoroutine;
     [SerializeField] private int _mapCenterMaxIdxY;
     [SerializeField] private List<GameObject> _prefabCubes;
     [SerializeField] private AudioSource _animationAudio;
-    [SerializeField] private AudioSource _newLayerAudio;
 
     private void Awake()
     {
@@ -43,9 +51,8 @@ public class MapManager : MonoBehaviour
     {
         EventManager.Destroyed.AddListener(DestroyWithID);
         EventManager.AllowedDestroyFlying.AddListener(DestroyFlyingCubes);
-        EventManager.ExceededSkip.AddListener(AddBottomLayer);
 
-        EventManager.RestartedGame.AddListener(() => PrepareMap(true));
+        //EventManager.RestartedGame.AddListener(() => PrepareMap(true));
     }
 
     private void CreateCubeMap()
@@ -170,9 +177,9 @@ public class MapManager : MonoBehaviour
         _visited.Clear();
 
         // Ищем куб на земле (правило согласовано с начальной картой)
-        for (int i = -CenterMaxIdxX; i <= CenterMaxIdxX; i++)
+        for (int i = -CenterMoveMaxIdxX; i <= CenterMoveMaxIdxX; i++)
         {
-            for (int k = -CenterMaxIdxZ; k <= CenterMaxIdxZ; k++)
+            for (int k = -CenterMoveMaxIdxZ; k <= CenterMoveMaxIdxZ; k++)
             {
                 Vector3Int checkPosition = new Vector3Int(i, _mapCenterStartIdxY, k);
 
@@ -204,7 +211,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    private void AddBottomLayer()
+    public void AddBottomLayer()
     {
         var extendedMap = new Dictionary<Vector3Int, Cube>();
 
@@ -219,8 +226,8 @@ public class MapManager : MonoBehaviour
             item.Value.transform.position = new Vector3(prevPos.x, prevPos.y + _positionOffset, prevPos.z);
         }
 
-        for (int i = -CenterMaxIdxX; i <= CenterMaxIdxX; i++)
-            for (int k = -CenterMaxIdxZ; k <= CenterMaxIdxZ; k++)
+        for (int i = -CenterMoveMaxIdxX; i <= CenterMoveMaxIdxX; i++)
+            for (int k = -CenterMoveMaxIdxZ; k <= CenterMoveMaxIdxZ; k++)
             {
                 Vector3Int cubePosition = new Vector3Int(i, _mapCenterStartIdxY, k);
 
@@ -235,8 +242,6 @@ public class MapManager : MonoBehaviour
             }
 
         CubeMap = extendedMap;
-
-        _newLayerAudio.Play();
     }
 
     private void ClearMap()
@@ -278,52 +283,111 @@ public class MapManager : MonoBehaviour
     private IEnumerator AnimateBuilding(bool doEvent)
     {
         float flyTime = 0.1f;
-        float waitTime = 0.05f;
+        float waitTime;
 
         foreach (var item in CubeMap)
         {
             Vector3 pos = (Vector3)item.Key * _positionOffset;
 
-            item.Value.gameObject.transform.position = pos + Vector3.up * 40;
+            item.Value.gameObject.transform.position = pos + Vector3.up * 30;
         }
 
-        foreach (var item in CubeMap)
+        for (int j = _mapCenterStartIdxY; j <= _mapCenterMaxIdxY; j++)
         {
-            Vector3 pos = (Vector3)item.Key * _positionOffset;
+            for (int i = -_mapCenterMaxIdxX; i <= _mapCenterMaxIdxX; i++)
+                for (int k = -_mapCenterMaxIdxZ; k <= _mapCenterMaxIdxZ; k++)
+                {
+                    Vector3Int cubePosition = new Vector3Int(i, j, k);
 
-            item.Value.gameObject.transform.DOMoveY(pos.y, flyTime).SetEase(Ease.OutExpo);
+                    Vector3 pos = (Vector3)cubePosition * _positionOffset;
+
+                    CubeMap[cubePosition].transform.DOMoveY(pos.y, flyTime).SetEase(Ease.OutQuad);
+
+                }
 
             _animationAudio.Play();
+
+            waitTime = Random.Range(0.05f, 0.2f);
 
             yield return new WaitForSeconds(waitTime);
         }
 
-        yield return null;
 
         if (doEvent)
         {
             yield return new WaitForSeconds(flyTime);
+
             EventManager.PreparedMap?.Invoke();
+
+            Debug.Log("PreparedMap + time = " + Time.time);
         }
     }
 
-    [SerializeField] private float _forceY;
-    [SerializeField] private float _maxForceUp;
-    [SerializeField] private Vector3 shakeStrength;
-
-    public enum BlockOutcome
+    public IEnumerator AnimateBottomLayer()
     {
-        Destruction,
-        Stuck
+        float flyTime = 0.1f;
+        float waitTime = flyTime;
+        float scale = 2f;
+        float flyTime2 = 1f;
+        float waitTime2 = flyTime2;
+
+        for (int i = -CenterMoveMaxIdxX; i <= CenterMoveMaxIdxX; i++)
+            for (int k = -CenterMoveMaxIdxZ; k <= CenterMoveMaxIdxZ; k++)
+            {
+                Vector3Int cubePosition = new Vector3Int(i, 0, k);
+
+                if (CubeMap.ContainsKey(cubePosition))
+                {
+                    Cube cube = CubeMap[cubePosition];
+
+                    Vector3Int startPos = cubePosition;
+
+                    cube.transform.DOMoveX(startPos.x * _positionOffset * scale, flyTime);
+                    cube.transform.DOMoveZ(startPos.z * _positionOffset * scale, flyTime);
+
+                    cube.transform.DOScaleX(scale, flyTime);
+                    cube.transform.DOScaleZ(scale, flyTime);
+                }
+            }
+
+        yield return new WaitForSeconds(waitTime);
+
+        for (int i = -CenterMoveMaxIdxX; i <= CenterMoveMaxIdxX; i++)
+            for (int k = -CenterMoveMaxIdxZ; k <= CenterMoveMaxIdxZ; k++)
+            {
+                Vector3Int cubePosition = new Vector3Int(i, 0, k);
+
+                if (CubeMap.ContainsKey(cubePosition))
+                {
+                    Cube cube = CubeMap[cubePosition];
+
+                    Vector3Int startPos = cubePosition;
+
+                    cube.transform.DOMove((Vector3)startPos * _positionOffset, flyTime2).SetEase(Ease.OutBounce);
+
+                    cube.transform.DOScaleX(1f, flyTime2).SetEase(Ease.OutBounce);
+                    cube.transform.DOScaleZ(1f, flyTime2).SetEase(Ease.OutBounce);
+                }
+            }
+
+        EventManager.AnimatedBottomLayer?.Invoke();
+
+        yield return new WaitForSeconds(waitTime2);
     }
 
     public void StartAnimation(Vector3 explosionPosFromInt, BlockOutcome outcome)
     {
         if (outcome == BlockOutcome.Destruction)
-            StartCoroutine(AnimateExplosion(explosionPosFromInt));
+        {
+            _animatingCoroutine = AnimateExplosion(explosionPosFromInt);
+            StartCoroutine(_animatingCoroutine);
+        }
 
         if (outcome == BlockOutcome.Stuck)
-            StartCoroutine(AnimateStick(explosionPosFromInt));
+        {
+            _animatingCoroutine = AnimateStick(explosionPosFromInt);
+            StartCoroutine(_animatingCoroutine);
+        }
     }
 
     private IEnumerator AnimateStick(Vector3 stickFromPos)
@@ -332,7 +396,7 @@ public class MapManager : MonoBehaviour
         float flyTime2 = 1f;
         float waitTime = flyTime;
 
-        _forceY = stickFromPos.y;
+        float _forceY = stickFromPos.y;
 
         foreach (var item in CubeMap)
         {
@@ -368,8 +432,19 @@ public class MapManager : MonoBehaviour
                 item.Value.transform.DOScaleX(1f, flyTime2).SetEase(Ease.OutBounce);
                 item.Value.transform.DOScaleZ(1f, flyTime2).SetEase(Ease.OutBounce);
             }
-
         }
+
+        yield return new WaitForSeconds(flyTime2);
+
+
+        if (GameManager.Instance.SkipCount == 0)
+        {
+            AddBottomLayer();
+
+            yield return AnimateBottomLayer();
+        }
+
+        ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>().ReadyAfterAnimation();
     }
 
     private IEnumerator AnimateExplosion(Vector3 explosionPosFromInt)
@@ -379,7 +454,7 @@ public class MapManager : MonoBehaviour
         float waitTime = flyTime;
         float waitTime2 = flyTime2;
 
-        _forceY = explosionPosFromInt.y;
+        float _forceY = explosionPosFromInt.y;
 
         Vector3 massCenter = Vector3.zero;
 
@@ -409,8 +484,8 @@ public class MapManager : MonoBehaviour
 
         float maxHeight = MaxHeight();
 
-        if (maxHeight == 0)
-            yield break;
+        //if (maxHeight == 0)
+        //    yield break;
 
         foreach (var item in CubeMap)
         {
@@ -420,7 +495,9 @@ public class MapManager : MonoBehaviour
 
             if (_forceY < maxHeight / 2 + 1 || (Mathf.Abs(forcePartX) <= 0.1f && Mathf.Abs(forcePartZ) <= 0.1f))
             {
-                item.Value.transform.DOMoveY(startPos.y * _positionOffset + startPos.y, flyTime);
+                item.Value.transform.DOMoveY(startPos.y * _positionOffset + startPos.y * 2, flyTime);
+
+                GameManager.Instance.IsTopExplosion = false;
             }
             else
             {
@@ -428,6 +505,8 @@ public class MapManager : MonoBehaviour
 
                 item.Value.transform.DOMoveX((startPos.x + force * forcePartX) * _positionOffset, flyTime);
                 item.Value.transform.DOMoveZ((startPos.z + force * forcePartZ) * _positionOffset, flyTime);
+
+                GameManager.Instance.IsTopExplosion = true;
             }
         }
 
@@ -439,5 +518,9 @@ public class MapManager : MonoBehaviour
 
             item.Value.transform.DOMove((Vector3)startPos * _positionOffset, flyTime2).SetEase(Ease.OutBounce);
         }
+
+        yield return new WaitForSeconds(waitTime2);
+
+        ObjectPool.Instance.ActiveObject.GetComponent<CubeBlock>().ReadyAfterAnimation();
     }
 }

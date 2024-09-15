@@ -18,9 +18,8 @@ public class SpawnManager : MonoBehaviour
 
         EventManager.PreparedMap.AddListener(SpawnPlayerBlock);
 
-        //EventManager.RestartedGame.AddListener(PrepareAndSpawn);
-
         EventManager.ReadyForNextBlock.AddListener(SpawnPlayerBlock);
+
         EventManager.Stuck.AddListener(SpawnStuckBlock);
         EventManager.DoneRotation.AddListener(RotateSpawnPostiton);
     }
@@ -33,6 +32,7 @@ public class SpawnManager : MonoBehaviour
         if (_mapManager.CubeMap.Count == 0)
         {
             EventManager.GameOver?.Invoke();
+            EventManager.GameIsWon?.Invoke(true);
 
             return;
         }
@@ -40,6 +40,7 @@ public class SpawnManager : MonoBehaviour
         if (_mapManager.MaxHeight() >= PositionInt.y)
         {
             EventManager.GameOver?.Invoke();
+            EventManager.GameIsWon?.Invoke(false);
 
             return;
         }
@@ -53,6 +54,8 @@ public class SpawnManager : MonoBehaviour
         cubeBlock.ChangePosition(PositionInt);
 
         cubeBlock.RotateFromCount(_leftRotateCount, _rightRotateCount);
+
+        cubeBlock.TurnOnMovingSounds();
 
         if (GameManager.Instance.IsTutorialDone)
             cubeBlock.StartMoveDown();
@@ -79,8 +82,6 @@ public class SpawnManager : MonoBehaviour
             _mapManager.AddCube(newPos, newCube);
         }
 
-        GameManager.Instance.AddSkip();
-
         _mapManager.MatchIDs();
     }
 
@@ -95,12 +96,5 @@ public class SpawnManager : MonoBehaviour
         {
             _leftRotateCount++;
         }
-    }
-
-    private void PrepareAndSpawn()
-    {
-        //_mapManager.PrepareMap();
-
-        SpawnPlayerBlock();
     }
 }

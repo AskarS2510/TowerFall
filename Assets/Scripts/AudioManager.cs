@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -11,10 +12,18 @@ public class AudioManager : MonoBehaviour
 
         EventManager.RaisedSlider.AddListener(ChangeVolume);
 
-        if (gameObject.name == "Explosion")
-            EventManager.DoneDestruction.AddListener(PlayEffects);
+        SubscribeByNames();
 
         LoadSettings();
+    }
+
+    private void SubscribeByNames()
+    {
+        if (gameObject.name == "StickSound")
+            EventManager.DoneDestruction.AddListener(PlayEffectsStick);
+
+        if (gameObject.name == "NewLayerSound")
+            EventManager.AnimatedBottomLayer.AddListener(PlayEffectsNewLayer);
     }
 
     private void ChangeVolume(string sourceName, float volume)
@@ -25,10 +34,15 @@ public class AudioManager : MonoBehaviour
         _audioSource.volume = volume;
     }
 
-    private void PlayEffects()
+    private void PlayEffectsStick()
     {
-        if (GameManager.Instance.DestroyedOnWave > 0)
+        if (GameManager.Instance.DestroyedOnWave == 0)
             _audioSource.Play();
+    }
+
+    private void PlayEffectsNewLayer()
+    {
+        _audioSource.Play();
     }
 
     private void LoadSettings()

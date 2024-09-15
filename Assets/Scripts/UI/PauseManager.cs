@@ -11,7 +11,8 @@ public class PauseManager : MonoBehaviour
     {
         gameObject.SetActive(false);
 
-        Time.timeScale = 1.0f;
+        if (!GameManager.Instance.IsGameOver)
+            Time.timeScale = 1.0f;
 
         EventManager.UnpausedGame?.Invoke();
     }
@@ -28,5 +29,10 @@ public class PauseManager : MonoBehaviour
     public void AskHowToPlay()
     {
         EventManager.AskedHowToPlay?.Invoke();
+    }
+
+    public void RaiseShowLeaders()
+    {
+        EventManager.RaisedShowLeaders?.Invoke();
     }
 }

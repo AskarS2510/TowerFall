@@ -11,7 +11,7 @@ public class CameraShaking : MonoBehaviour
     {
         _shakeStrength = 0;
 
-        _shakeDuration = GameManager.Instance.DelayBetweenWaves;
+        _shakeDuration = GameManager.Instance.EffectsDuration;
 
         EventManager.DoneDestruction.AddListener(ShakeCamera);
         EventManager.Stuck.AddListener(ShakeNoWait);

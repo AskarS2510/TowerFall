@@ -12,10 +12,12 @@ public class TextManager : MonoBehaviour
         textMesh = GetComponent<TextMeshProUGUI>();
 
         EventManager.UpdatedSkip.AddListener(UpdateSkip);
+        EventManager.UpdatedTime.AddListener(UpdatePassedTime);
         EventManager.UpdatedTime.AddListener(UpdateLeftTime);
 
         UpdateSkip();
         UpdateLeftTime();
+        UpdatePassedTime();
     }
 
     private void UpdateSkip()
@@ -24,6 +26,22 @@ public class TextManager : MonoBehaviour
             return;
 
         textMesh.text = GameManager.Instance.SkipLeft.ToString();
+    }
+
+    private void UpdatePassedTime()
+    {
+        if (gameObject.name != "Passed Time Text")
+            return;
+
+        float time = GameManager.Instance.PassedTime;
+
+        TimeSpan result = TimeSpan.FromSeconds(time);
+
+        string fromTimeString;
+
+        fromTimeString = result.ToString("m':'ss");
+
+        textMesh.text = fromTimeString;
     }
 
     private void UpdateLeftTime()
@@ -40,6 +58,9 @@ public class TextManager : MonoBehaviour
             fromTimeString = result.ToString("m':'ss");
         else
             fromTimeString = result.ToString("ss");
+
+        if (time < 10)
+            fromTimeString = result.ToString("%s");
 
         textMesh.text = fromTimeString;
     }

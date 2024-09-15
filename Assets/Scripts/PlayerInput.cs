@@ -19,6 +19,8 @@ public class PlayerInput : MonoBehaviour
     {
         //Application.targetFrameRate = 30;
 
+        LoadSettings();
+
         EventManager.DoneRotation.AddListener(RotateControls);
 
         EventManager.PausedGame.AddListener(() => gameObject.SetActive(false));
