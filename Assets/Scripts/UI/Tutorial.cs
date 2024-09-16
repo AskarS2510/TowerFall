@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using YG;
 
 public class Tutorial : MonoBehaviour
 {
@@ -276,8 +277,11 @@ public class Tutorial : MonoBehaviour
             return;
         }
 
-        PlayerPrefs.SetInt("IsTutorialDone", 1);
-        PlayerPrefs.Save();
+        //PlayerPrefs.SetInt("IsTutorialDone", 1);
+        //PlayerPrefs.Save();
+
+        YandexGame.savesData.IsTutorialDone = true;
+        YandexGame.SaveProgress();
 
         GameManager.Instance.IsTutorialDone = true;        
 
@@ -290,8 +294,11 @@ public class Tutorial : MonoBehaviour
 
     public void RestartTutorial()
     {
-        PlayerPrefs.SetInt("IsTutorialDone", 0);
-        PlayerPrefs.Save();
+        //PlayerPrefs.SetInt("IsTutorialDone", 0);
+        //PlayerPrefs.Save();
+
+        YandexGame.savesData.IsTutorialDone = false;
+        YandexGame.SaveProgress();
 
         GameManager.Instance.IsTutorialDone = false;
 

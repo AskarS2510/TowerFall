@@ -1,5 +1,5 @@
 {
-    "idSave": 3,
+    "idSave": 7,
     "isFirstSession": false,
     "language": "ru",
     "promptDone": false,
@@ -9,5 +9,9 @@
         false,
         true,
         false
-    ]
+    ],
+    "MusicVolume": 0.5,
+    "EffectsVolume": 0.5,
+    "SenseValue": 0.5,
+    "IsTutorialDone": true
 }

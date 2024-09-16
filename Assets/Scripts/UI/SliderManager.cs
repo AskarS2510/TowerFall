@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 public class SliderManager : MonoBehaviour
 {
@@ -41,16 +42,34 @@ public class SliderManager : MonoBehaviour
 
     private void LoadSettings()
     {
-        if (name == "Slider Sensitivity")
-            _slider.value = PlayerPrefs.GetFloat(_sourceName, GameManager.Instance.DefaultSense);
-        else
-            _slider.value = PlayerPrefs.GetFloat(_sourceName, GameManager.Instance.DefaultAudioValue);
+        //if (name == "Slider Sensitivity")
+        //    _slider.value = PlayerPrefs.GetFloat(_sourceName, GameManager.Instance.DefaultSense);
+        //else
+        //    _slider.value = PlayerPrefs.GetFloat(_sourceName, GameManager.Instance.DefaultAudioValue);
+
+        if (_sourceName == "Music")
+            _slider.value = YandexGame.savesData.MusicVolume;
+
+        if (_sourceName == "Effects")
+            _slider.value = YandexGame.savesData.EffectsVolume;
+
+        if (_sourceName == "Sensitivity")
+            _slider.value = YandexGame.savesData.SenseValue;
 
         ChangeValue(_slider.value);
     }
 
     private void SaveSettings()
     {
-        PlayerPrefs.SetFloat(_sourceName, _slider.value);
+        //PlayerPrefs.SetFloat(_sourceName, _slider.value);
+
+        if (_sourceName == "Music")
+            YandexGame.savesData.MusicVolume = _slider.value;
+
+        if (_sourceName == "Effects")
+            YandexGame.savesData.EffectsVolume = _slider.value;
+
+        if (_sourceName == "Sensitivity")
+            YandexGame.savesData.SenseValue = _slider.value;
     }
 }

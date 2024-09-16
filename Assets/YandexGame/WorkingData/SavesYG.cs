@@ -16,7 +16,10 @@ namespace YG
         public string newPlayerName = "Hello!";
         public bool[] openLevels = new bool[3];
 
-
+        public float MusicVolume = 0.5f;
+        public float EffectsVolume = 0.5f;
+        public float SenseValue = 0.5f;
+        public bool IsTutorialDone = false;
 
         // Ваши сохранения
 

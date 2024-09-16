@@ -1,4 +1,5 @@
 using UnityEngine;
+using YG;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -180,7 +181,9 @@ public class PlayerInput : MonoBehaviour
 
     private void LoadSettings()
     {
-        float sense = PlayerPrefs.GetFloat("Sensitivity", GameManager.Instance.DefaultSense);
+        //float sense = PlayerPrefs.GetFloat("Sensitivity", GameManager.Instance.DefaultSense);
+
+        float sense = YandexGame.savesData.SenseValue;
 
         SetSensetivity(sense);
     }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using YG;
 
 public class AudioManager : MonoBehaviour
 {
@@ -46,6 +47,12 @@ public class AudioManager : MonoBehaviour
 
     private void LoadSettings()
     {
-        _audioSource.volume = PlayerPrefs.GetFloat(_audioName, GameManager.Instance.DefaultAudioValue);
+        //_audioSource.volume = PlayerPrefs.GetFloat(_audioName, GameManager.Instance.DefaultAudioValue);
+
+        if (_audioName == "Music")
+            _audioSource.volume = YandexGame.savesData.MusicVolume;
+
+        if (_audioName == "Effects")
+            _audioSource.volume = YandexGame.savesData.EffectsVolume;
     }
 }

@@ -25,11 +25,14 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         //PlayerPrefs.DeleteAll();
+        //PlayerPrefs.Save();
 
-        if (PlayerPrefs.GetInt("IsTutorialDone", 0) == 0)
-            IsTutorialDone = false;
-        else
-            IsTutorialDone = true;
+        IsTutorialDone = YandexGame.savesData.IsTutorialDone;
+
+        //if (PlayerPrefs.GetInt("IsTutorialDone", 0) == 0)
+        //    IsTutorialDone = false;
+        //else
+        //    IsTutorialDone = true;
 
         if (Instance == null)
         {
@@ -88,7 +91,8 @@ public class GameManager : MonoBehaviour
 
     private void RestartGame()
     {
-        PlayerPrefs.Save();
+        //PlayerPrefs.Save();
+        YandexGame.SaveProgress();
 
         DOTween.KillAll();
 
