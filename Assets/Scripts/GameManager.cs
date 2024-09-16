@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using YG;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,11 +36,16 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
 
-        //userDeviceType = SystemInfo.deviceType;
+        if (YandexGame.EnvironmentData.isDesktop)
+            userDeviceType = DeviceType.Desktop;
+        else
+            userDeviceType = DeviceType.Handheld;
     }
 
     private void Start()
     {
+        YandexGame.StickyAdActivity(true);
+
         //IsTutorialDone = false;
         EffectsDuration = 1.2f;
 

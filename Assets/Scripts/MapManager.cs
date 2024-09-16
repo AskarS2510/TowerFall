@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
-using static UnityEditor.Progress;
 
 public class MapManager : MonoBehaviour
 {
@@ -289,7 +286,7 @@ public class MapManager : MonoBehaviour
         {
             Vector3 pos = (Vector3)item.Key * _positionOffset;
 
-            item.Value.gameObject.transform.position = pos + Vector3.up * 30;
+            item.Value.gameObject.transform.position = pos + Vector3.up * 40;
         }
 
         for (int j = _mapCenterStartIdxY; j <= _mapCenterMaxIdxY; j++)
@@ -318,8 +315,6 @@ public class MapManager : MonoBehaviour
             yield return new WaitForSeconds(flyTime);
 
             EventManager.PreparedMap?.Invoke();
-
-            Debug.Log("PreparedMap + time = " + Time.time);
         }
     }
 

@@ -141,8 +141,6 @@ public class CubeBlock : MonoBehaviour
     {
         gameObject.SetActive(false);
 
-        Debug.Log("ReadyForNextBlock + time = " + Time.time + "object = " + name);
-
         EventManager.ReadyForNextBlock?.Invoke();
     }
 
