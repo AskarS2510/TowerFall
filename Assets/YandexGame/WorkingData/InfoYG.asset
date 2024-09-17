@@ -32,7 +32,7 @@ MonoBehaviour:
   durationOfAdSimulation: 0.5
   loadAdWithDelaySimulation: 0
   testErrorOfRewardedAdsInEditor: 0
-  saveCloud: 1
+  saveCloud: 0
   flush: 0
   localSaveSync: 1
   saveCloudInterval: 5
@@ -182,8 +182,57 @@ MonoBehaviour:
     thisPlayer:
       rank: 2
       score: 10
+  - technoName: TimeLeaderBoardNew
+    entries: 'Test LeaderBoard
+
+      Name: time
+
+      1. anonymous: 10
+
+      2.
+      Max: 15
+
+      3. Maria: 23'
+    isDefault: 0
+    isInvertSortOrder: 1
+    decimalOffset: 0
+    type: time
+    players:
+    - rank: 6
+      name: anonymous
+      score: 2
+      photo: https://games-sdk.yandex.ru/games/api/sdk/v1/player/avatar/0/islands-retina-small
+      uniqueID: 789
+    - rank: 5
+      name: Max
+      score: 3
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 987
+    - rank: 4
+      name: Maria
+      score: 62000
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 891
+    - rank: 3
+      name: Player4
+      score: 122000
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 321
+    - rank: 6
+      name: Player this
+      score: 42223
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 000
+    - rank: 2
+      name: Player6
+      score: 340000
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 321
+    thisPlayer:
+      rank: 2
+      score: 10
   LocalizationEnable: 1
-  callingLanguageCheck: 1
+  callingLanguageCheck: 0
   translateMethod: 0
   domainAutoLocalization: com
   CSVFileTranslate:
@@ -218,6 +267,35 @@ MonoBehaviour:
     de: 0
     hi: 0
   fonts:
+    defaultFont: []
+    ru: []
+    en: []
+    tr: []
+    az: []
+    be: []
+    he: []
+    hy: []
+    ka: []
+    et: []
+    fr: []
+    kk: []
+    ky: []
+    lt: []
+    lv: []
+    ro: []
+    tg: []
+    tk: []
+    uk: []
+    uz: []
+    es: []
+    pt: []
+    ar: []
+    id: []
+    ja: []
+    it: []
+    de: []
+    hi: []
+  fontsTMP:
     defaultFont: []
     ru: []
     en: []

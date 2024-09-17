@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using System.IO;
 using YG.Utils.Lang;
 #if YG_TEXT_MESH_PRO
-using TMPro;
 #endif
 
 namespace YG.Insides

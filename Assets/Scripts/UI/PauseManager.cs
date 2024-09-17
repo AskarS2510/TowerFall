@@ -1,4 +1,5 @@
 using UnityEngine;
+using YG;
 
 public class PauseManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PauseManager : MonoBehaviour
 
     public void UnpauseGame()
     {
+        YandexGame.SaveProgress();
+
         gameObject.SetActive(false);
 
         if (!GameManager.Instance.IsGameOver)

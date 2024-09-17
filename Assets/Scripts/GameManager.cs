@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public int SkipCount;
     [HideInInspector] public int MaxAllowedSkipCount;
     [HideInInspector] public int SkipLeft;
-    [HideInInspector] public float DefaultAudioValue = 0.1f;
-    [HideInInspector] public float DefaultSense = 0.5f;
+    //[HideInInspector] public float DefaultAudioValue = 0.1f;
+    //[HideInInspector] public float DefaultSense = 0.5f;
     [HideInInspector] public IEnumerator _timer;
     [HideInInspector] public bool IsTopExplosion;
     public DeviceType userDeviceType;
@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
             userDeviceType = DeviceType.Desktop;
         else
             userDeviceType = DeviceType.Handheld;
+
+        //userDeviceType = DeviceType.Handheld;
     }
 
     private void Start()
@@ -85,6 +87,8 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
+        ResetStats();
+
         _timer = Timer();
         StartCoroutine(_timer);
     }
@@ -122,7 +126,7 @@ public class GameManager : MonoBehaviour
     {
         PassedTime = 0f;
         DestroyedOnWave = 0;
-        LeftTime = 90;
+        LeftTime = 2;
         IsGameOver = false;
         SkipCount = 0;
         MaxAllowedSkipCount = 2;
@@ -137,6 +141,11 @@ public class GameManager : MonoBehaviour
         DestroyedOnWave = 0;
     }
 
+    private void Update()
+    {
+        PassedTime += Time.deltaTime;
+    }
+
     private IEnumerator Timer()
     {
         while (true)
@@ -145,7 +154,6 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
 
-            PassedTime++;
             LeftTime--;
 
             if (LeftTime < 0)

@@ -84,8 +84,6 @@ public class Tutorial : MonoBehaviour
     {
         _buttonDrop.SetActive(true);
 
-        float xRight = 190f;
-        float y = -165f;
         float delay = 0.5f;
         float afterDropDelay = 4f;
 
@@ -94,8 +92,8 @@ public class Tutorial : MonoBehaviour
             _cursorImage.transform.localPosition = Vector3.zero;
             _cursorImage.gameObject.SetActive(true);
 
-            _cursorImage.transform.DOLocalMoveX(xRight, 2 * delay);
-            _cursorImage.transform.DOLocalMoveY(y, 2 * delay);
+            _cursorImage.transform.DOMoveX(_buttonDrop.transform.position.x, 2 * delay);
+            _cursorImage.transform.DOMoveY(_buttonDrop.transform.position.y, 2 * delay);
             yield return new WaitForSeconds(2 * delay);
             _cursorImage.transform.DOScale(0.7f, delay);
             yield return new WaitForSeconds(delay);
@@ -114,15 +112,12 @@ public class Tutorial : MonoBehaviour
         _buttonLeft.SetActive(true);
         _buttonRight.SetActive(true);
 
-        float xRight = 190f;
-        float xLeft = -175f;
-        float y = -40f;
         float delay = 0.5f;
 
         while (true)
         {
-            _cursorImage.transform.DOLocalMoveX(xRight, 2 * delay);
-            _cursorImage.transform.DOLocalMoveY(y, 2 * delay);
+            _cursorImage.transform.DOMoveX(_buttonRight.transform.position.x, 2 * delay);
+            _cursorImage.transform.DOMoveY(_buttonRight.transform.position.y, 2 * delay);
             yield return new WaitForSeconds(2 * delay);
             _cursorImage.transform.DOScale(0.7f, delay);
             yield return new WaitForSeconds(delay);
@@ -130,8 +125,8 @@ public class Tutorial : MonoBehaviour
             _cursorImage.transform.DOScale(1f, delay);
             yield return new WaitForSeconds(delay);
 
-            _cursorImage.transform.DOLocalMoveX(xLeft, 2 * delay);
-            _cursorImage.transform.DOLocalMoveY(y, 2 * delay);
+            _cursorImage.transform.DOMoveX(_buttonLeft.transform.position.x, 2 * delay);
+            _cursorImage.transform.DOMoveY(_buttonLeft.transform.position.y, 2 * delay);
             yield return new WaitForSeconds(2 * delay);
             _cursorImage.transform.DOScale(0.7f, delay);
             yield return new WaitForSeconds(delay);
@@ -301,6 +296,9 @@ public class Tutorial : MonoBehaviour
         YandexGame.SaveProgress();
 
         GameManager.Instance.IsTutorialDone = false;
+
+
+        //YandexGame.NewLBScoreTimeConvert("TimeLeaderBoardNew", 8.124142141f * 1000f);
 
         DOTween.KillAll();
 

@@ -20,6 +20,7 @@ namespace YG
         public float EffectsVolume = 0.5f;
         public float SenseValue = 0.5f;
         public bool IsTutorialDone = false;
+        public float BestTime = 600.111f;
 
         // Ваши сохранения
 

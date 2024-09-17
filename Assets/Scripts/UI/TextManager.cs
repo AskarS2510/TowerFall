@@ -14,6 +14,7 @@ public class TextManager : MonoBehaviour
         EventManager.UpdatedSkip.AddListener(UpdateSkip);
         EventManager.UpdatedTime.AddListener(UpdatePassedTime);
         EventManager.UpdatedTime.AddListener(UpdateLeftTime);
+        EventManager.GameIsWon.AddListener((value) => UpdatePassedTime());
 
         UpdateSkip();
         UpdateLeftTime();
