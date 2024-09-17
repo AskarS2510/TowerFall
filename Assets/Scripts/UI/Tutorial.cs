@@ -298,7 +298,9 @@ public class Tutorial : MonoBehaviour
         GameManager.Instance.IsTutorialDone = false;
 
 
-        //YandexGame.NewLBScoreTimeConvert("TimeLeaderBoardNew", 8.124142141f * 1000f);
+        //YandexGame.NewLBScoreTimeConvert("TimeLeaderBoardNew", 800.124142141f * 1000f);
+        //YandexGame.savesData.BestTime = 800.124142141f;
+        //YandexGame.SaveProgress();
 
         DOTween.KillAll();
 

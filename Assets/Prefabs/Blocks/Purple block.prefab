@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4929794388053383783}
   m_Layer: 0
   m_Name: Purple block
-  m_TagString: CubeBlock
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -57,7 +57,10 @@ MonoBehaviour:
   StuckPosition: {x: 0, y: 0, z: 0}
   StuckRotation: {x: 0, y: 0, z: 0, w: 0}
   PositionInt: {x: 0, y: 0, z: 0}
-  _mapManagerObj: {fileID: 0}
+  FinalPosition: {x: 0, y: 0, z: 0}
+  BlockColor: {r: 0, g: 0, b: 0, a: 0}
+  _mapManager: {fileID: 0}
+  _animationAudio: {fileID: 0}
 --- !u!1001 &2086346125345665433
 PrefabInstance:
   m_ObjectHideFlags: 0

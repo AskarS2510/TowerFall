@@ -1,7 +1,7 @@
 {
-    "idSave": 13,
+    "idSave": 46,
     "isFirstSession": false,
-    "language": "ru",
+    "language": "en",
     "promptDone": false,
     "money": 1,
     "newPlayerName": "Hello!",
@@ -10,9 +10,9 @@
         true,
         false
     ],
-    "MusicVolume": 0.5,
+    "MusicVolume": 0.6145474314689636,
     "EffectsVolume": 0.5,
     "SenseValue": 0.5,
     "IsTutorialDone": true,
-    "BestTime": 10.265583038330079
+    "BestTime": 5.983088493347168
 }

@@ -6,19 +6,23 @@ public class TextManager : MonoBehaviour
 {
     TextMeshProUGUI textMesh;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        if (gameObject.name != "Passed Time Text")
+            return;
+
+        EventManager.GameIsWon.AddListener((value) => UpdatePassedTime());
+    }
+
     private void Start()
     {
         textMesh = GetComponent<TextMeshProUGUI>();
 
         EventManager.UpdatedSkip.AddListener(UpdateSkip);
-        EventManager.UpdatedTime.AddListener(UpdatePassedTime);
         EventManager.UpdatedTime.AddListener(UpdateLeftTime);
-        EventManager.GameIsWon.AddListener((value) => UpdatePassedTime());
 
         UpdateSkip();
         UpdateLeftTime();
-        UpdatePassedTime();
     }
 
     private void UpdateSkip()

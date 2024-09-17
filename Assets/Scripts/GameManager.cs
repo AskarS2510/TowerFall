@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour
     {
         PassedTime = 0f;
         DestroyedOnWave = 0;
-        LeftTime = 2;
+        LeftTime = 90;
         IsGameOver = false;
         SkipCount = 0;
         MaxAllowedSkipCount = 2;

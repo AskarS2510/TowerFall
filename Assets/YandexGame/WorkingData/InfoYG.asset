@@ -18,7 +18,7 @@ MonoBehaviour:
   playerInfoSimulation:
     authorized: 1
     isMobile: 0
-    language: ru
+    language: en
     name: Player this
     uniqueID: 000
     photo: https://justplaygames.ru/public/icon_player.png
@@ -220,19 +220,54 @@ MonoBehaviour:
       uniqueID: 321
     - rank: 6
       name: Player this
-      score: 42223
+      score: 4222333
       photo: https://justplaygames.ru/public/icon_player.png
       uniqueID: 000
     - rank: 2
-      name: Player6
-      score: 340000
+      name: wwwww
+      score: 340001
       photo: https://justplaygames.ru/public/icon_player.png
       uniqueID: 321
+    - rank: 666
+      name: fffff
+      score: 340002
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 322
+    - rank: 13
+      name: ddddd
+      score: 340003
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 323
+    - rank: 15
+      name: asdasd
+      score: 340004
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 324
+    - rank: 132
+      name: 2222222aaa
+      score: 3400213
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 31111
+    - rank: 333
+      name: Play444
+      score: 3403333
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 3255
+    - rank: 22
+      name: "\u0444\u0432\u0444\u044B\u0432\u0444\u044B"
+      score: 340005
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 325
+    - rank: 12111
+      name: asa
+      score: 342
+      photo: https://justplaygames.ru/public/icon_player.png
+      uniqueID: 32332
     thisPlayer:
       rank: 2
       score: 10
   LocalizationEnable: 1
-  callingLanguageCheck: 0
+  callingLanguageCheck: 1
   translateMethod: 0
   domainAutoLocalization: com
   CSVFileTranslate:

@@ -51,9 +51,9 @@ public class SpawnManager : MonoBehaviour
 
         cubeBlock.gameObject.SetActive(true);
 
-        cubeBlock.ChangePosition(PositionInt);
-
         cubeBlock.RotateFromCount(_leftRotateCount, _rightRotateCount);
+
+        cubeBlock.ChangePosition(PositionInt);
 
         cubeBlock.TurnOnMovingSounds();
 
