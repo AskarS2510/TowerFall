@@ -58,16 +58,19 @@ public class ObjectPool : MonoBehaviour
         Shuffle(_pooledObjects);
 
         Color color;
+        Color colorLast;
 
         int randomPrefabIdx = 0;
 
         for (int i = 0; i < _amountToPool; i++)
         {
-            // Делаем следующий объект без повторений только если на поле больше 1 цеета
-            if (MapManager.s_leftColorCubes.Count != 1 && _lastNext == _pooledObjects[i])
-                continue;
-
             color = _pooledObjects[i].GetComponent<CubeBlock>().BlockColor;
+
+            colorLast = _lastNext.GetComponent<CubeBlock>().BlockColor;
+
+            // Делаем следующий объект без повторений только если на поле больше 1 цеета
+            if (MapManager.s_leftColorCubes.Count != 1 && color == colorLast)
+                continue;
 
             if (MapManager.s_leftColorCubes.ContainsKey(color))
             {

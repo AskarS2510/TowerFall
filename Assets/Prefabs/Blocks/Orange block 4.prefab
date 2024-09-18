@@ -51,7 +51,7 @@ MonoBehaviour:
   DefaultBlockScheme:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 1, z: 0}
-  - {x: 0, y: 1, z: 1}
+  - {x: 0, y: 2, z: 1}
   - {x: 0, y: 2, z: 0}
   RotatedBlockScheme: []
   BlockStructure: {fileID: 4301911124896110162, guid: e2f942ff3528cc04d97ccaa91aee6a34,
@@ -301,7 +301,7 @@ PrefabInstance:
     - target: {fileID: 2488236182026703707, guid: e2f942ff3528cc04d97ccaa91aee6a34,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.2
+      value: 2.4
       objectReference: {fileID: 0}
     - target: {fileID: 2488236182026703707, guid: e2f942ff3528cc04d97ccaa91aee6a34,
         type: 3}
